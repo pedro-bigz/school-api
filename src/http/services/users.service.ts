@@ -1,14 +1,13 @@
-import { User } from './../../entities/user.entity';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from '../../dto/users/create-user.dto';
-import { UpdateUserDto } from '../../dto/users/update-user.dto';
+import { User } from '@app/entities/user.entity';
+import { Injectable, Inject } from '@nestjs/common';
+import { CreateUserDto } from '@app/dto/users/create-user.dto';
+import { UpdateUserDto } from '@app/dto/users/update-user.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
 	constructor(
-		@InjectRepository(User)
+		@Inject('USER_REPOSITORY')
 		private usersRepo: Repository<User>
 	) {}
 
@@ -27,6 +26,10 @@ export class UsersService {
 	findByEmail(email: string): Promise<User | null> {
 		return this.usersRepo.findOneBy({ email });
 	}
+
+	// findByEmail(email: string) {
+	// 	console.log(email);
+	// }
 
 	update(id: number, updateUserDto: UpdateUserDto) {
 		return this.usersRepo.update(id, updateUserDto);

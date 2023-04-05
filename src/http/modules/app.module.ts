@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersHttpModule } from './users-http.module';
 import { AuthModule } from './auth.module';
+import { Connection } from 'typeorm';
 
 @Module({
 	imports: [
@@ -18,7 +19,7 @@ import { AuthModule } from './auth.module';
 			username: process.env.DB_USERNAME,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_DATABASE,
-			entities: [],
+			entities: [__dirname + '@app/entity/*.entity{.ts,.js}'],
 			synchronize: true,
 		}),
 
@@ -27,6 +28,8 @@ import { AuthModule } from './auth.module';
 	],
 })
 export class AppModule {
+	constructor(private connection: Connection) {}
+
 	configure(consumer: MiddlewareConsumer) {
 		consumer
 		  .apply(AuthMiddleware, UseTermMiddleware)

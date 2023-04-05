@@ -6,15 +6,15 @@ export class User {
     id: number;
 
     @Column()
-    'first_name': string;
+    first_name: string;
 
     @Column()
-    'last_name': string;
+    last_name: string;
 
-    @Column({ default: false })
+    @Column()
     email: string;
 
-    @Column({ default: false })
+    @Column({ default: '' })
     password: string;
 
     @Column({ default: false })
@@ -26,15 +26,12 @@ export class User {
     @Column()
     genero: string;
 
-    @Column()
-    language: string;
-
     @Column({ default: false })
-    'checked_term': boolean;
+    checked_term: boolean;
 
     @Column()
-    'last_login_at': string;
+    last_login_at: string;
 
     @Column()
-    'token_profile': string;
+    token_profile: string;
 };
