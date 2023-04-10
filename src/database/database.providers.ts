@@ -1,21 +1,32 @@
 import { DataSource } from 'typeorm';
 
+// Temporario. Posteriormente passaremos a utilizar @nestjs/config (dotenv)
 export const databaseProviders = [
-  {
-    provide: 'DATA_SOURCE',
-    useFactory: async () => {
-      const dataSource = new DataSource({
-        type: 'mysql',
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT),
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
-        entities: [__dirname + '@app/entity/*.entity{.ts,.js}'],
-        synchronize: JSON.parse(process.env.DB_SYNCHRONIZE),
-      });
+    {
+        provide: 'MYSQL_CONNECTION',
+        useFactory: async () => {
+            const dataSource = new DataSource({
+                type: 'mysql',
+                host: 'localhost',
+                port: 3306,
+                username: 'didatikos',
+                password: 'Didatikos@1010',
+                database: 'school',
+                entities: [
+                    __dirname + '/../**/*.entity{.ts,.js}',
+                ],
+                synchronize: true,
+            });
+            // try {
+            //     if (!dataSource.isInitialized) {
+            //         await dataSource.initialize();
+            //     }
+            // } catch (error) {
+            //     console.error(error?.message);
+            // }
+            // return dataSource;
 
-      return dataSource.initialize();
+            return dataSource.initialize();
+        },
     },
-  },
 ];
