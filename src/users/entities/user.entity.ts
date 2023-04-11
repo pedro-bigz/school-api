@@ -1,6 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn
+} from 'typeorm';
 
-@Entity()
+@Entity({ name: "users"})
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,7 +18,7 @@ export class User {
     @Column({ length: 100 })
     last_name: string;
 
-    @Column({ length: 255 })
+    @Column({ length: 255, unique: true })
     email: string;
 
     @Column({ length: 255, default: '' })
@@ -24,14 +31,14 @@ export class User {
     forbidden: boolean;
 
     @Column()
-    genero: string;
+    last_login_at: Date;
 
-    @Column({ default: false })
-    checked_term: boolean;
+    @CreateDateColumn()
+    created_at: Date;
 
-    @Column()
-    last_login_at: string;
+    @UpdateDateColumn()
+    updated_at: Date;
 
-    @Column()
-    token_profile: string;
+    @DeleteDateColumn()
+    deleted_at: Date;
 };
