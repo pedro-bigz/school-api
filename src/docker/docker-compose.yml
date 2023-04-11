@@ -3,11 +3,12 @@ version: '3.9'
 services:
   MySql:
     image: mysql:latest
-    container_name: pdsi-school
-    restart: always
+    container_name: school
     environment:
       MYSQL_ROOT_PASSWORD: pdsi1234
-      MYSQL_DATABASE: pdsi-school-db
+      MYSQL_USERNAME: didatikos
+      MYSQL_PASSWORD: Didatikos@1010
+      MYSQL_DATABASE: school
     ports:
       - '3306:3306'
     volumes:
