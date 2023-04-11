@@ -4,6 +4,7 @@ import {
     Entity,
     Column,
     OneToMany,
+    JoinColumn,
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
@@ -49,5 +50,6 @@ export class User {
     resources: Resource[]
 
     @OneToMany(() => ModelHasRole, (modelHasRoles) => modelHasRoles.user)
+    @JoinColumn()
     modelHasRoles: ModelHasRole[]
 };

@@ -12,7 +12,7 @@ import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module
 import { ConfigModule } from '@nestjs/config';
 import configuration from '@app/config/configuration';
 
-console.log(configuration())
+console.log(process.env, configuration())
 
 @Module({
 	imports: [
