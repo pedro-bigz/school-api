@@ -1,6 +1,9 @@
+import { ModelHasRole } from '@app/model_has_roles/entities/model_has_role.entity';
+import { Resource } from '@app/resources/entities/resource.entity';
 import {
     Entity,
     Column,
+    OneToMany,
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
@@ -9,14 +12,14 @@ import {
 
 @Entity({ name: "users"})
 export class User {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: number;
 
     @Column({ length: 100 })
-    first_name: string;
+    firstName: string;
 
     @Column({ length: 100 })
-    last_name: string;
+    lastName: string;
 
     @Column({ length: 255, unique: true })
     email: string;
@@ -30,15 +33,21 @@ export class User {
     @Column({ default: false })
     forbidden: boolean;
 
-    @Column()
-    last_login_at: Date;
+    @Column({ type: 'timestamp', nullable: true })
+    lastLoginAt: Date;
 
-    @CreateDateColumn()
-    created_at: Date;
+    @CreateDateColumn({ type: 'timestamp', nullable: true })
+    createdAt: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+    @UpdateDateColumn({ type: 'timestamp', nullable: true })
+    updatedAt: Date;
 
-    @DeleteDateColumn()
-    deleted_at: Date;
+    @DeleteDateColumn({ type: 'timestamp', nullable: true })
+    deletedAt: Date;
+
+    @OneToMany(() => Resource, (resource) => resource.creator)
+    resources: Resource[]
+
+    @OneToMany(() => ModelHasRole, (modelHasRoles) => modelHasRoles.user)
+    modelHasRoles: ModelHasRole[]
 };

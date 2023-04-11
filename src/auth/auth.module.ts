@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from '@app/auth/local.strategy';
 import { JwtStrategy } from '@app/auth/jwt.strategy';
 import { jwtConstants } from '@app/auth/constants';
+// import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
 // import { UsersService } from '@app/users/users.service';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { User } from '@app/users/entities/user.entity';
@@ -15,6 +16,7 @@ import { jwtConstants } from '@app/auth/constants';
   imports: [
     UsersModule,
     PassportModule,
+    // ModelHasRolesModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },

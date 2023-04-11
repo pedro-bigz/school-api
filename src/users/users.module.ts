@@ -5,9 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
+import { ModelHasRole } from '@app/model_has_roles/entities/model_has_role.entity';
+import { Resource } from '@app/resources/entities/resource.entity';
+import { ResourcesModule } from '@app/resources/resources.module';
+import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([User])],
+	imports: [TypeOrmModule.forFeature([User]), ResourcesModule, ModelHasRolesModule],
 	controllers: [UsersController],
 	exports: [UsersService],
 	providers: [

@@ -7,16 +7,22 @@ import { AuthModule } from '@app/auth/auth.module';
 import { ResourcesModule } from '@app/resources/resources.module';
 import { DatabaseModule } from '@app/database/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '@app/users/entities/user.entity';
-// import configuration from './config/configuration';
+import { RolesModule } from '@app/roles/roles.module';
+import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from '@app/config/configuration';
+
+console.log(configuration())
 
 @Module({
 	imports: [
-		// ConfigModule.forRoot(),
+		ConfigModule.forRoot({ isGlobal: true }),
 		DatabaseModule,
 		UsersModule,
 		AuthModule,
 		ResourcesModule,
+		RolesModule,
+		ModelHasRolesModule,
 		TypeOrmModule.forRoot({
 			type: 'mysql',
 			host: 'localhost',
@@ -24,8 +30,8 @@ import { User } from '@app/users/entities/user.entity';
 			username: 'didatikos',
 			password: 'Didatikos@1010',
 			database: 'school',
-			entities: [User],
-			synchronize: true,
+			entities: [],
+			synchronize: false,
 		}),
 	],
 	controllers: [AppController],
