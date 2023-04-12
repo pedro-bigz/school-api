@@ -5,7 +5,6 @@ import { AppService } from '@app/app.service';
 import { UsersModule } from '@app/users/users.module';
 import { AuthModule } from '@app/auth/auth.module';
 import { ResourcesModule } from '@app/resources/resources.module';
-import { DatabaseModule } from '@app/database/database.module';
 import { TypeOrmModule, } from '@nestjs/typeorm';
 import { RolesModule } from '@app/roles/roles.module';
 import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
@@ -20,7 +19,6 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 			envFilePath: getEnvPath(`${__dirname}/common/envs`),
 			isGlobal: true
 		}),
-		DatabaseModule,
 		UsersModule,
 		AuthModule,
 		ResourcesModule,
