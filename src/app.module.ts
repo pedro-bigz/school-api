@@ -10,16 +10,16 @@ import { TypeOrmModule, } from '@nestjs/typeorm';
 import { RolesModule } from '@app/roles/roles.module';
 import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
 import { ConfigModule } from '@nestjs/config';
-import configuration from '@app/config/configuration';
 import { getEnvPath } from '@app/common/helper/env.helper';
 
-const envFilePath = getEnvPath(`${__dirname}/common/envs`);
-
-type TypeOrmModuleOptionType = "mysql" | "mariadb";
+type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+		ConfigModule.forRoot({
+			envFilePath: getEnvPath(`${__dirname}/common/envs`),
+			isGlobal: true
+		}),
 		DatabaseModule,
 		UsersModule,
 		AuthModule,
@@ -33,7 +33,9 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb";
 			username: process.env.DB_USERNAME,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_DATABASE,
-			entities: [],
+			entities: [
+				'@app/**/*.entity{.ts,.js}',
+			],
 			synchronize: true,
 		}),
 	],
@@ -43,11 +45,3 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb";
 export class AppModule {
 	constructor(private dataSource: DataSource) {}
 }
-// export class AppModule implements NestModule {
-// 	configure(consumer: MiddlewareConsumer) {
-// 		consumer
-// 			.apply(AuthenticateMiddleware)
-// 			.exclude('login', 'register')
-// 			.forRoutes('*');
-//   }
-// }
