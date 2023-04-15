@@ -13,19 +13,10 @@ export const databaseProviders = [
                 password: 'Didatikos@1010',
                 database: 'school',
                 entities: [
-                    __dirname + '/../**/*.entity{.ts,.js}',
+                    '@app/**/*.entity{.ts,.js}',
                 ],
                 synchronize: true,
             });
-            // try {
-            //     if (!dataSource.isInitialized) {
-            //         await dataSource.initialize();
-            //     }
-            // } catch (error) {
-            //     console.error(error?.message);
-            // }
-            // return dataSource;
-
             return dataSource.initialize();
         },
     },
