@@ -1,22 +1,18 @@
 import { Module } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { DatabaseModule } from '../database/database.module';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
-import { User } from './entities/user.entity';
-import { ModelHasRole } from '@app/model_has_roles/entities/model_has_role.entity';
-import { Resource } from '@app/resources/entities/resource.entity';
+import { UsersService } from '@app/users/users.service';
+import { UsersController } from '@app/users/users.controller';
+import { User } from '@app/users/entities/user.entity';
 import { ResourcesModule } from '@app/resources/resources.module';
 import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
+import { UserRepository } from '@app/users/users.repository';
 
 @Module({
 	imports: [TypeOrmModule.forFeature([User]), ResourcesModule, ModelHasRolesModule],
 	controllers: [UsersController],
 	exports: [UsersService],
-	providers: [
-		UsersService
-	]
+	providers: [UsersService, UserRepository]
 })
 export class UsersModule {
 	constructor(private dataSource: DataSource) {}

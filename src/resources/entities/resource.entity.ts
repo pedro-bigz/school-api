@@ -36,6 +36,6 @@ export class Resource {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @ManyToOne((type) => User, (user) => user.resources)
+    @ManyToOne((type) => User, (user) => user.id)
     creator: User
 };
