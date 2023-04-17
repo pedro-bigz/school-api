@@ -10,6 +10,14 @@ import { RolesModule } from '@app/roles/roles.module';
 import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvPath } from '@app/common/helper/env.helper';
+import { User } from './users/entities/user.entity';
+import { ModelHasRole } from './model_has_roles/entities/model_has_role.entity';
+import { Role } from './roles/entities/role.entity';
+import { Resource } from './resources/entities/resource.entity';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RoleHasPermissionsModule } from './role_has_permissions/role_has_permissions.module';
+import { RoleHasPermission } from './role_has_permissions/entities/role_has_permission.entity';
+import { Permission } from './permissions/entities/permission.entity';
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -23,7 +31,11 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 		AuthModule,
 		ResourcesModule,
 		RolesModule,
+		PermissionsModule,
 		ModelHasRolesModule,
+		RolesModule,
+		PermissionsModule,
+		RoleHasPermissionsModule,
 		TypeOrmModule.forRoot({
 			type: process.env.DB_CONNECTION as TypeOrmModuleOptionType,
 			host: process.env.DB_HOST,
@@ -32,10 +44,17 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_DATABASE,
 			entities: [
-				'@app/**/entities/*.entity.{js,ts}',
+				User,
+				Role,
+				Resource,
+				Permission,
+				ModelHasRole,
+				RoleHasPermission,
 			],
-			synchronize: true,
+			synchronize: false,
 		}),
+		PermissionsModule,
+		RoleHasPermissionsModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

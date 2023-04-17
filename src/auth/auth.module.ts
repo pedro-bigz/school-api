@@ -4,7 +4,6 @@ import { AuthService } from '@app/auth/auth.service';
 import { AuthController } from '@app/auth/auth.controller';
 import { UsersModule } from '@app/users/users.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from '@app/auth/local.strategy';
 import { JwtStrategy } from '@app/auth/jwt.strategy';
 import { jwtConstants } from '@app/auth/constants';
 // import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
@@ -23,7 +22,7 @@ import { jwtConstants } from '@app/auth/constants';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, JwtStrategy],
 	exports: [AuthService],
 })
 export class AuthModule {}
