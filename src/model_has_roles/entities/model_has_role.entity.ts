@@ -8,14 +8,14 @@ export class ModelHasRole {
     id: number;
 
     @Column({ type: 'bigint', unsigned: true })
-    public userId: number
+    userId: number
 
     @Column({ type: 'bigint', unsigned: true })
-    public roleId: number
+    roleId: number
 
-    @ManyToOne(() => Role, (role) => role.modelHasRoles)
-    public role: Role
+    @ManyToOne(() => Role, (role) => role.id)
+    role: Role
 
-    @ManyToOne(() => User, (user) => user.modelHasRoles)
-    public user: User
+    @ManyToOne(() => User, (user) => user.id)
+    user: User
 }

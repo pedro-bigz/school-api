@@ -14,17 +14,17 @@ export class Role {
     id: number;
 
     @Column({ length: 255 })
-    public name: string;
+    name: string;
 
     @Column({ length: 255 })
-    public guardName: string;
+    guardName: string;
 
     @CreateDateColumn()
-    public createdAt: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    public updatedAt: Date;
+    updatedAt: Date;
 
     @OneToMany(() => ModelHasRole, modelHasRole => modelHasRole.role)
-    public modelHasRoles: ModelHasRole[]; 
+    modelHasRoles: ModelHasRole[]; 
 }
