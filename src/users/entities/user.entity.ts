@@ -46,10 +46,11 @@ export class User {
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
     deletedAt: Date;
 
-    @OneToMany(() => Resource, (resource) => resource.creator)
+    @OneToMany(() => Resource, resource => resource.creator)
+    @JoinColumn()
     resources: Resource[]
 
-    @OneToMany(() => ModelHasRole, (modelHasRoles) => modelHasRoles.user)
+    @OneToMany(() => ModelHasRole, modelHasRoles => modelHasRoles.user)
     @JoinColumn()
     modelHasRoles: ModelHasRole[]
 };
