@@ -13,18 +13,15 @@ export class MediaController {
 	@UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(@UploadedFile() file: Express.Multer.File) {
-        const filename = Str.random(40);
-        const extension = File.extname(file.originalname);
-        const basename = File.getUploadPath(filename + extension);
-
-        console.log(file, basename)
+        const pathinfo = File.create(file.originalname);
 
         try {
-            await File.upload(basename, file.buffer);
+            await File.upload(pathinfo.path, file.buffer);
 
             return {
                 statusCode: 200,
-                message: "Operation succeeded"
+                message: "Operation succeeded",
+                path: pathinfo.basename,
             }
         } catch (e) {
             return {

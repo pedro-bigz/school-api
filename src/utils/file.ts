@@ -1,29 +1,43 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import { Str } from '@app/utils/str';
 
 export class File {
+    static create(originalname: string) {
+        const filename = Str.random(40);
+        const extension = File.extname(originalname);
+        const basename = filename + extension
+        const path = File.applyUploadPath(basename);
+
+        return { filename, extension, basename, path };
+    }
+
     static extname(filename: string): string {
         return path.extname(filename);
     }
 
-    static getUploadPath(filename: string): string {
+    static getUploadPath(): string {
+        return path.join(__dirname, '../..', '/storage/uploads');
+    }
+
+    static applyUploadPath(filename: string): string {
         return path.join(__dirname, '../..', '/storage/uploads/' + filename);
     }
 
-    static async upload(basename: string, buffer: any) {
+    static async upload(path: string, buffer: any) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(basename, buffer, function (err: any, file: any) {
+            fs.writeFile(path, buffer, (err: NodeJS.ErrnoException | null): void => {
                 if (err) reject(err);
-                resolve(file);
+                resolve(path);
             }); 
         })
     }
 
-    static async delete(basename: string) {
+    static async delete(path: string) {
         return new Promise((resolve, reject) => {
-            fs.unlink(basename, function (err: any) {
+            fs.unlink(path, function (err: any) {
                 if (err) reject(err);
-                resolve(basename);
+                resolve(path);
             }); 
         })
     }
