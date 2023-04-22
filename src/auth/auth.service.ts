@@ -1,3 +1,4 @@
+import { IsEmail } from 'class-validator';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '@app/users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -33,6 +34,14 @@ export class AuthService {
 	async signIn(email: string, password: string): Promise<ResponseToken> {
 		try {
 			const user = await this.validateUser({ email, password })
+			return this.login(user);
+		} catch (e) {
+			return e.response;
+		}
+	}
+
+	async refresh(user: any): Promise<ResponseToken> {
+		try {
 			return this.login(user);
 		} catch (e) {
 			return e.response;

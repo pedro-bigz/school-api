@@ -18,6 +18,7 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { RoleHasPermissionsModule } from './role_has_permissions/role_has_permissions.module';
 import { RoleHasPermission } from './role_has_permissions/entities/role_has_permission.entity';
 import { Permission } from './permissions/entities/permission.entity';
+import { MediaController } from './media/media.controller';
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -56,7 +57,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 		PermissionsModule,
 		RoleHasPermissionsModule,
 	],
-	controllers: [AppController],
+	controllers: [AppController, MediaController],
 	providers: [AppService],
 })
 export class AppModule {

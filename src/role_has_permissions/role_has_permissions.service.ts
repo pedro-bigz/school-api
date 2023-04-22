@@ -35,12 +35,12 @@ export class RoleHasPermissionsService {
 		return resp;
 	}
 
-	async authorize(req: any, permission: string): Promise<Boolean> {
-    const roleIds = req.user.modelHasRoles.map(modelHasRole => {
-      return modelHasRole.roleId;
-    })
+	async authorize(user: any, permission: string): Promise<Boolean> {
+		const roleIds = user.modelHasRoles.map(modelHasRole => {
+			return modelHasRole.roleId;
+		})
 		const resp = await this.findByRoleIds(roleIds);
-    const hasAccess = resp.some(item => item.permission.name == permission);
+    	const hasAccess = resp.some(item => item.permission.name == permission);
     
 		return hasAccess;
 	}

@@ -24,12 +24,12 @@ export class UsersService {
 		return user;
 	}
 
-	async userUserPermission(req, permission: string) {
-		return this.roleHasPermissionsService.authorize(req, permission);
+	async userUserPermission(user: any, permission: string) {
+		return this.roleHasPermissionsService.authorize(user, permission);
 	}
 
-	userHasRole(req, role: string): boolean {
-		return req.user.modelHasRoles.some(mhr => {
+	userHasRole(user: any, role: string): boolean {
+		return user.modelHasRoles.some(mhr => {
 			return mhr.role.name === role
 		});
 	}

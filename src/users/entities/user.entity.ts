@@ -1,6 +1,5 @@
 import { ModelHasRole } from '@app/model_has_roles/entities/model_has_role.entity';
 import { Resource } from '@app/resources/entities/resource.entity';
-import { Role } from '@app/roles/roles.enum';
 import {
     Entity,
     Column,
@@ -46,8 +45,6 @@ export class User {
 
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
     deletedAt: Date;
-
-    roles: Role[];
 
     @OneToMany(() => Resource, resource => resource.creator)
     @JoinColumn()
