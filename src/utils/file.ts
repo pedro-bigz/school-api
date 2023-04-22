@@ -21,7 +21,7 @@ export class File {
     }
 
     static applyUploadPath(filename: string): string {
-        return path.join(__dirname, '../..', '/storage/uploads/' + filename);
+        return path.join(__dirname, '../..', '/storage/uploads/', filename);
     }
 
     static async upload(path: string, buffer: any) {
