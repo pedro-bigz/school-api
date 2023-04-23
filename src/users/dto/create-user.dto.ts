@@ -1,37 +1,24 @@
-import { IsBoolean, IsString, IsInt, IsEmail} from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsString, IsEmail, IsNotEmpty } from "class-validator";
 
 export class CreateUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-    @IsEmail()
-    email: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 
-    @IsString()
-    password: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @IsString()
-    first_name: string;
-
-    @IsString()
-    last_name: string;
-
-    @IsBoolean()
-    activated: boolean;
-
-    @IsString()
-    forbidden: boolean;
-
-    @IsString()
-    deleted_at: string
-
-    @IsString()
-    updated_at: string
-
-    @IsString()
-    remember_token: string;
-
-    @IsString()
-    token_profile: string;
-
-    @IsString()
-    last_login_at: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  ufuRegister: string;
 }

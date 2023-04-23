@@ -10,6 +10,8 @@ import { RolesModule } from '@app/roles/roles.module';
 import { ModelHasRolesModule } from '@app/model_has_roles/model_has_roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvPath } from '@app/common/helper/env.helper';
+import { DisciplineModule } from './discipline/discipline.module';
+import { MediaModule } from './media/media.module';
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -36,6 +38,8 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 			],
 			synchronize: true,
 		}),
+		DisciplineModule,
+		MediaModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
