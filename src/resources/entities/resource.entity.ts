@@ -1,4 +1,5 @@
 import { Discipline } from "@app/discipline/entities/discipline.entity";
+import { Media } from "@app/media/entities/media.entity";
 import { User } from "@app/users/entities/user.entity";
 import {
   Entity,
@@ -9,6 +10,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   RelationId,
+  OneToMany,
 } from "typeorm";
 
 @Entity({ name: "resources" })
@@ -37,12 +39,15 @@ export class Resource {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne((type) => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id)
   creator: User;
 
   @RelationId((resource: Resource) => resource.discipline)
   disciplineId: number;
 
-  @ManyToOne((type) => Discipline, (discipline) => discipline.id)
+  @ManyToOne(() => Discipline, (discipline) => discipline.id)
   discipline: Discipline;
+
+  @OneToMany(() => Media, (media) => media.resource)
+  media: Media[];
 }

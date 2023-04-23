@@ -1,3 +1,4 @@
+import { Resource } from "@app/resources/entities/resource.entity";
 import {
   Entity,
   Column,
@@ -7,6 +8,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  RelationId,
+  ManyToOne,
 } from "typeorm";
 
 export class Media {
@@ -27,4 +30,10 @@ export class Media {
 
   @DeleteDateColumn({ type: "timestamp", nullable: true })
   deletedAt: Date;
+
+  @RelationId((resource: Resource) => resource.media)
+  resourceId: number;
+
+  @ManyToOne(() => Resource, (resource) => resource.id)
+  resource: Resource;
 }
