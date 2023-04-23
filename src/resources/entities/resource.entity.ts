@@ -1,3 +1,4 @@
+import { Discipline } from "@app/discipline/entities/discipline.entity";
 import { User } from "@app/users/entities/user.entity";
 import {
   Entity,
@@ -25,7 +26,7 @@ export class Resource {
   activated: boolean;
 
   @RelationId((resource: Resource) => resource.creator)
-  createdId: number;
+  creatorId: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -38,4 +39,10 @@ export class Resource {
 
   @ManyToOne((type) => User, (user) => user.id)
   creator: User;
+
+  @RelationId((resource: Resource) => resource.discipline)
+  disciplineId: number;
+
+  @ManyToOne((type) => Discipline, (discipline) => discipline.id)
+  discipline: Discipline;
 }

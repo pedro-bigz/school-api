@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { CreateResourceDto } from "./create-resource.dto";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty } from "class-validator";
+import { IsString, IsNotEmpty, IsNumber } from "class-validator";
 
 export class UpdateResourceDto extends PartialType(CreateResourceDto) {
   @ApiProperty()
@@ -13,4 +13,9 @@ export class UpdateResourceDto extends PartialType(CreateResourceDto) {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  editorId: number;
 }
