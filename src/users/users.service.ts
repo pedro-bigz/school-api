@@ -1,48 +1,115 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { UserRepository } from './users.repository';
-import { RoleHasPermissionsService } from '@app/role_has_permissions/role_has_permissions.service';
+import { HttpException, Injectable } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
+import { UserRepository } from "./users.repository";
+import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
 
 @Injectable()
 export class UsersService {
-	constructor(
-		private readonly userRepo: UserRepository,
-		private readonly roleHasPermissionsService: RoleHasPermissionsService
-	) {}
+  constructor(
+    private readonly userRepo: UserRepository,
+    private readonly roleHasPermissionsService: RoleHasPermissionsService
+  ) {}
 
-	async list(): Promise<User[]> {
-		return this.userRepo.find();
-	}
+  async list(): Promise<User[]> {
+    return this.userRepo.find();
+  }
 
-	async find(email: string): Promise<User | undefined> {
-		const user = await this.userRepo.findOne({
-			where: { email },
-			relations: ['modelHasRoles', 'modelHasRoles.role'],
-		});
-		return user;
-	}
+  async find(email: string): Promise<User | undefined> {
+    const user = await this.userRepo.findOne({
+      where: { email },
+      relations: ["modelHasRoles", "modelHasRoles.role"],
+    });
+    return user;
+  }
 
-	async userUserPermission(user: any, permission: string) {
-		return this.roleHasPermissionsService.authorize(user, permission);
-	}
+  async userUserPermission(user: any, permission: string) {
+    return this.roleHasPermissionsService.authorize(user, permission);
+  }
 
-	userHasRole(user: any, role: string): boolean {
-		return user.modelHasRoles.some(mhr => {
-			return mhr.role.name === role
-		});
-	}
+  userHasRole(user: any, role: string): boolean {
+    return user.modelHasRoles.some((mhr) => {
+      return mhr.role.name === role;
+    });
+  }
 
-	create(createUserDto: CreateUserDto) {
-		// return this.usersService.create(createUserDto);
-	}
+  async findById(id: number): Promise<User | undefined> {
+    const user = await this.userRepo.findOne({
+      where: { id },
+    });
 
-	update(id: string, updateUserDto: UpdateUserDto) {
-		// return this.usersService.update(+id, updateUserDto);
-	}
+    if (user == null) throw new HttpException("User not found", 404);
 
-	remove(id: string) {
-		// return this.usersService.remove(+id);
-	}
+    return user;
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> | undefined {
+    const email = createUserDto.email;
+
+    const user = await this.userRepo.findOne({
+      where: { email },
+    });
+
+    if (user != null)
+      throw new HttpException(`User with email ${email} already exists`, 400);
+
+    const newUser = new User();
+
+    const nameArr = createUserDto.name.split(" ");
+
+    newUser.firstName = nameArr[0];
+    newUser.lastName = nameArr[nameArr.length - 1];
+    newUser.password = createUserDto.password;
+    newUser.email = createUserDto.email;
+    newUser.createdAt = new Date();
+    newUser.activated = true;
+
+    this.userRepo.create(newUser);
+    this.userRepo.save(newUser);
+
+    return newUser;
+  }
+
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto
+  ): Promise<User> | undefined {
+    const user = await this.userRepo.findOne({
+      where: { id },
+    });
+
+    const email = updateUserDto.email;
+
+    if (user == null) throw new HttpException("User not found", 404);
+
+    const nameArr = updateUserDto.name.split(" ");
+
+    user.firstName = nameArr[0];
+    user.lastName = nameArr[nameArr.length - 1];
+    user.password = updateUserDto.password;
+    user.email = updateUserDto.email;
+    user.updatedAt = new Date();
+    user.activated = true;
+
+    await this.userRepo.update({ email }, user);
+    this.userRepo.save(user);
+
+    return user;
+  }
+
+  async remove(id: number): Promise<string> {
+    const user = await this.userRepo.findOne({
+      where: { id },
+    });
+
+    if (user == null) throw new HttpException("User not found", 404);
+
+    user.deletedAt = new Date();
+
+    this.userRepo.delete(user);
+    this.userRepo.save(user);
+
+    return "Deleted Successfully";
+  }
 }

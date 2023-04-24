@@ -1,39 +1,32 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
-import { IsBoolean, IsString, IsInt, IsEmail} from 'class-validator';
+import { PartialType } from "@nestjs/mapped-types";
+import { CreateUserDto } from "./create-user.dto";
+import {
+  IsBoolean,
+  IsString,
+  IsInt,
+  IsEmail,
+  IsNotEmpty,
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-    
-    @IsEmail()
-    email: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-    @IsString()
-    password: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 
-    @IsString()
-    first_name: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @IsString()
-    last_name: string;
-
-    @IsBoolean()
-    activated: boolean;
-
-    @IsString()
-    forbidden: boolean;
-
-    @IsString()
-    deleted_at: string
-
-    @IsString()
-    updated_at: string
-
-    @IsString()
-    remember_token: string;
-
-    @IsString()
-    token_profile: string;
-
-    @IsString()
-    last_login_at: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  activated: boolean;
 }

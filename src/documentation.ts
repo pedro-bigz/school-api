@@ -1,47 +1,57 @@
-import { DocumentBuilder } from "@nestjs/swagger";
-import { ExternalDocumentationObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
+import { DocumentBuilder } from '@nestjs/swagger';
+import { ExternalDocumentationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 type Tag = {
-    name: string,
-    description?: string|undefined,
-    externalDocs?: ExternalDocumentationObject|undefined,
-}
+  name: string;
+  description?: string | undefined;
+  externalDocs?: ExternalDocumentationObject | undefined;
+};
 
 const app = {
-    name: 'School API',
-    description: 'Listagem de Endpoints',
-    version: '1.0',
-    tags: [],
-    // tags: [{ name: 'users' }, { name: 'resources' }, { name: 'auth' }],
-}
+  name: 'School API',
+  description: 'Listagem de Endpoints',
+  version: '1.0',
+  tags: [],
+  // tags: [{ name: 'users' }, { name: 'resources' }, { name: 'auth' }],
+};
 
 export class SwaggerDocumentationAdapter {
-    document: any;
-    config: any;
+  document: any;
+  config: any;
 
-    constructor(title: string, description: string, version: string, tags: Tag[]) {
-        this.document = new DocumentBuilder();
-        this.document = this.document
-            .setTitle(title)
-            .setDescription(description)
-            .setVersion(version);
-        
-        tags.forEach((tag: Tag) => {
-            this.document.addTag(tag.name, tag.description, tag.externalDocs);
-        })
+  constructor(
+    title: string,
+    description: string,
+    version: string,
+    tags: Tag[],
+  ) {
+    this.document = new DocumentBuilder();
+    this.document = this.document
+      .setTitle(title)
+      .setDescription(description)
+      .setVersion(version);
 
-        this.config = this.document.build();
-    }
+    tags.forEach((tag: Tag) => {
+      this.document.addTag(tag.name, tag.description, tag.externalDocs);
+    });
 
-    static create() {
-        return new SwaggerDocumentationAdapter(app.name, app.description, app.version, app.tags);
-    }
+    this.config = this.document.build();
+  }
 
-    get() {
-        return this.document;
-    }
+  static create() {
+    return new SwaggerDocumentationAdapter(
+      app.name,
+      app.description,
+      app.version,
+      app.tags,
+    );
+  }
 
-    getConfig() {
-        return this.config;
-    }
+  get() {
+    return this.document;
+  }
+
+  getConfig() {
+    return this.config;
+  }
 }
