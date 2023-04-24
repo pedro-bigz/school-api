@@ -5,10 +5,11 @@ import { Resource } from "./entities/resource.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@app/users/entities/user.entity";
 import { Media } from "@app/media/entities/media.entity";
+import { ResourceRepository } from "./resources.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Resource, User, Media])],
   controllers: [ResourcesController],
-  providers: [ResourcesService],
+  providers: [ResourcesService, ResourceRepository],
 })
 export class ResourcesModule {}

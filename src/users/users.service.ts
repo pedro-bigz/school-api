@@ -82,6 +82,7 @@ export class UsersService {
     user.activated = true;
 
     await this.userRepo.update({ email }, user);
+    this.userRepo.save(user);
 
     return user;
   }
@@ -96,7 +97,8 @@ export class UsersService {
     user.deletedAt = new Date();
 
     this.userRepo.delete(user);
+    this.userRepo.save(user);
 
-    return "Success";
+    return "Deleted Successfully";
   }
 }
