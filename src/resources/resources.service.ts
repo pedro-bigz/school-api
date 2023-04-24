@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { CreateResourceDto } from './dto/create-resource.dto';
-import { UpdateResourceDto } from './dto/update-resource.dto';
-import { ResourceRepository } from './resources.repository';
-import { Resource } from './entities/resource.entity';
+import { Injectable } from "@nestjs/common";
+import { CreateResourceDto } from "./dto/create-resource.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { ResourceRepository } from "./resources.repository";
+import { Resource } from "./entities/resource.entity";
 
 @Injectable()
 export class ResourcesService {
-  constructor(private readonly resourceRepo:ResourceRepository){}
+  constructor(private readonly resourceRepo: ResourceRepository) {}
 
   async list(): Promise<Resource[]> {
     return this.resourceRepo.find();
