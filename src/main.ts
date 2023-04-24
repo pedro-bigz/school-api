@@ -5,11 +5,11 @@ import { SwaggerDocumentationAdapter } from './documentation';
 
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule, { cors: true });
 	const config = SwaggerDocumentationAdapter.create();
 	const document = SwaggerModule.createDocument(app, config.getConfig());
-	SwaggerModule.setup('api', app, document);
 
+	SwaggerModule.setup('api', app, document);
 	await app.listen(process.env.APP_PORT || 3000);
 }
 bootstrap();
