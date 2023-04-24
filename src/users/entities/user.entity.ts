@@ -47,6 +47,7 @@ export class User {
   deletedAt: Date;
 
   @OneToMany(() => Resource, (resource) => resource.creator)
+  @JoinColumn()
   resources: Resource[];
 
   @OneToMany(() => ModelHasRole, (modelHasRoles) => modelHasRoles.user)

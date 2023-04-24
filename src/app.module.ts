@@ -12,6 +12,18 @@ import { ConfigModule } from "@nestjs/config";
 import { getEnvPath } from "@app/common/helper/env.helper";
 import { DisciplineModule } from "./discipline/discipline.module";
 import { MediaModule } from "./media/media.module";
+import { PermissionsModule } from "./permissions/permissions.module";
+import { RoleHasPermissionsModule } from "./role_has_permissions/role_has_permissions.module";
+import { MediaController } from "./media/media.controller";
+import { Discipline } from "./discipline/entities/discipline.entity";
+import { Media } from "./media/entities/media.entity";
+import { User } from "./users/entities/user.entity";
+import { Role } from "./roles/entities/role.entity";
+import { Resource } from "./resources/entities/resource.entity";
+import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
+import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
+import { Permission } from "./permissions/entities/permission.entity";
+import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -21,11 +33,6 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
       envFilePath: getEnvPath(`${__dirname}/common/envs`),
       isGlobal: true,
     }),
-    UsersModule,
-    AuthModule,
-    ResourcesModule,
-    RolesModule,
-    ModelHasRolesModule,
     TypeOrmModule.forRoot({
       type: process.env.DB_CONNECTION as TypeOrmModuleOptionType,
       host: process.env.DB_HOST,
@@ -33,9 +40,25 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: ["dist/**/*.entity{.ts,.js}"],
+      entities: [
+        User,
+        Role,
+        Resource,
+        Permission,
+        ModelHasRole,
+        RoleHasPermission,
+        Discipline,
+        Media,
+      ],
       synchronize: true,
     }),
+    UsersModule,
+    AuthModule,
+    ResourcesModule,
+    ModelHasRolesModule,
+    RolesModule,
+    PermissionsModule,
+    RoleHasPermissionsModule,
     DisciplineModule,
     MediaModule,
   ],

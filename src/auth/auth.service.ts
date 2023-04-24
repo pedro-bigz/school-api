@@ -1,7 +1,12 @@
+import { IsEmail } from 'class-validator';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@app/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
+
+export type ResponseToken = {
+	access_token: string,
+}
 
 @Injectable()
 export class AuthService {
@@ -11,10 +16,7 @@ export class AuthService {
 	) {}
 
 	async validateUser({ email, password }): Promise<any> {
-		console.log('validateUser1');
 		const user = await this.usersService.find(email);
-		console.log('validateUser3');
-		console.log(user);
 		if (user && await compare(password, user.password)) {
 			const { password, ...result } = user;
 			return result;
@@ -29,10 +31,17 @@ export class AuthService {
 		};
 	}
 
-	async signIn(email: string, password: string) {
+	async signIn(email: string, password: string): Promise<ResponseToken> {
 		try {
-			console.log(email, password);
 			const user = await this.validateUser({ email, password })
+			return this.login(user);
+		} catch (e) {
+			return e.response;
+		}
+	}
+
+	async refresh(user: any): Promise<ResponseToken> {
+		try {
 			return this.login(user);
 		} catch (e) {
 			return e.response;

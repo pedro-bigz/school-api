@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@app/*": ["./src/*"],
-      "@dist/*": ["./dist/*"]
+      "@dist/*": ["./dist/*"],
+      "@storage/*": ["./storage/*"]
     }
   }
 }

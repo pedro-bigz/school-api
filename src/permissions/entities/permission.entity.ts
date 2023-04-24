@@ -1,17 +1,16 @@
 import { RoleHasPermission } from '@app/role_has_permissions/entities/role_has_permission.entity';
-import { ModelHasRole } from '@app/model_has_roles/entities/model_has_role.entity';
 import {
-    Column,
     Entity,
+    Column,
     OneToMany,
     JoinColumn,
     PrimaryGeneratedColumn,
     CreateDateColumn,
-    UpdateDateColumn,
+    UpdateDateColumn
 } from 'typeorm';
 
-@Entity({ name: "roles" })
-export class Role {
+@Entity({ name: "permissions"})
+export class Permission {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: number;
 
@@ -21,17 +20,13 @@ export class Role {
     @Column({ length: 255 })
     guardName: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'timestamp', nullable: true })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: 'timestamp', nullable: true })
     updatedAt: Date;
 
-    @OneToMany(() => ModelHasRole, modelHasRole => modelHasRole.user)
-    @JoinColumn()
-    modelHasRoles: ModelHasRole[]; 
-
-    @OneToMany(() => RoleHasPermission, roleHasPermission => roleHasPermission.role)
+    @OneToMany(() => RoleHasPermission, (roleHasPermission) => roleHasPermission.permission)
     @JoinColumn()
     roleHasPermission: RoleHasPermission[]
-}
+};
