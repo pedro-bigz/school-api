@@ -55,6 +55,7 @@ export class UsersService {
     newUser.activated = true;
 
     this.userRepo.create(newUser);
+    this.userRepo.save(newUser);
 
     return newUser;
   }

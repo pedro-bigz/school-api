@@ -42,8 +42,8 @@ export class Resource {
   @ManyToOne(() => User, (user) => user.id)
   creator: User;
 
-  @RelationId((resource: Resource) => resource.discipline)
-  disciplineId: number;
+  // @RelationId((resource: Resource) => resource.discipline)
+  // disciplineId: number;
 
   @ManyToOne(() => Discipline, (discipline) => discipline.id)
   discipline: Discipline;

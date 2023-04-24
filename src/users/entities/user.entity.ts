@@ -11,7 +11,7 @@ import {
   DeleteDateColumn,
 } from "typeorm";
 
-@Entity({ name: "users" })
+@Entity({ name: "user" })
 export class User {
   @PrimaryGeneratedColumn({ type: "bigint", unsigned: true })
   id: number;

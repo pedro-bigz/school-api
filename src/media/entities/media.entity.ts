@@ -12,6 +12,7 @@ import {
   ManyToOne,
 } from "typeorm";
 
+@Entity({ name: "media" })
 export class Media {
   @PrimaryGeneratedColumn({ type: "bigint", unsigned: true })
   id: number;
@@ -31,8 +32,8 @@ export class Media {
   @DeleteDateColumn({ type: "timestamp", nullable: true })
   deletedAt: Date;
 
-  @RelationId((resource: Resource) => resource.media)
-  resourceId: number;
+  // @RelationId((resource: Resource) => resource.media)
+  // resourceId: number;
 
   @ManyToOne(() => Resource, (resource) => resource.id)
   resource: Resource;
