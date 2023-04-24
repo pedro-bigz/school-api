@@ -4,6 +4,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { UserRepository } from "./users.repository";
 import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -44,7 +45,7 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> | undefined {
+  async create(createUserDto: CreateUserDto): Promise<any> | undefined {
     const email = createUserDto.email;
 
     const user = await this.userRepo.findOne({
@@ -56,19 +57,19 @@ export class UsersService {
 
     const newUser = new User();
 
-    const nameArr = createUserDto.name.split(" ");
-
-    newUser.firstName = nameArr[0];
-    newUser.lastName = nameArr[nameArr.length - 1];
-    newUser.password = createUserDto.password;
+    newUser.firstName = createUserDto.firstName;
+    newUser.lastName = createUserDto.lastName;
+    newUser.password = await hash(createUserDto.password, parseInt(process.env.HASH_SALT));
     newUser.email = createUserDto.email;
-    newUser.createdAt = new Date();
+    newUser.createdAt = newUser.updatedAt = new Date();
     newUser.activated = true;
 
     this.userRepo.create(newUser);
     this.userRepo.save(newUser);
 
-    return newUser;
+    const { password, ...register } = newUser;
+
+    return register;
   }
 
   async update(
