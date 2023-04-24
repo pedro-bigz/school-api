@@ -32,19 +32,11 @@ export class AuthService {
 	}
 
 	async signIn(email: string, password: string): Promise<ResponseToken> {
-		try {
-			const user = await this.validateUser({ email, password })
-			return this.login(user);
-		} catch (e) {
-			return e.response;
-		}
+		const user = await this.validateUser({ email, password })
+		return this.login(user);
 	}
 
 	async refresh(user: any): Promise<ResponseToken> {
-		try {
-			return this.login(user);
-		} catch (e) {
-			return e.response;
-		}
+		return this.login(user);
 	}
 }
