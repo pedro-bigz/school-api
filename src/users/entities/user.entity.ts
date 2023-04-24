@@ -34,6 +34,9 @@ export class User {
   @Column({ default: false })
   forbidden: boolean;
 
+  @Column({ length: 15 })
+  sex: string;
+
   @Column({ type: "timestamp", nullable: true })
   lastLoginAt: Date;
 

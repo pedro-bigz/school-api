@@ -1,18 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { CreateResourceDto } from "./dto/create-resource.dto";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
 import { ResourceRepository } from "./resources.repository";
 import { Resource } from "./entities/resource.entity";
-
+import { UsersService } from "@app/users/users.service";
+import { DisciplineService } from "@app/discipline/discipline.service";
+import { MediaService } from "@app/media/media.service";
 @Injectable()
 export class ResourcesService {
-  constructor(private readonly resourceRepo: ResourceRepository) {}
+  constructor(
+    private readonly resourceRepo: ResourceRepository,
+    private readonly userService: UsersService,
+    private readonly disciplineService: DisciplineService,
+    private readonly mediaService: MediaService
+  ) {}
 
   async list(): Promise<Resource[]> {
     return this.resourceRepo.find();
   }
-  create(createResourceDto: CreateResourceDto) {
+  async create(createResourceDto: CreateResourceDto): Promise<Resource> {
     const newResource = new Resource();
+
+    const disciplineId = createResourceDto.disciplineId;
+    const creatorId = createResourceDto.creatorId;
 
     newResource.title = createResourceDto.title;
     newResource.description = createResourceDto.description;
@@ -20,10 +30,15 @@ export class ResourcesService {
     newResource.activated = true;
     newResource.createdAt = new Date();
 
-    //Falta esses dados!!!
-    // newResource.creatorId
-    // newResource.media
-    // newResource.discipline
+    const discipline = await this.disciplineService.findOne(disciplineId);
+
+    const creator = await this.userService.findById(creatorId);
+
+    const media = await this.mediaService.create(createResourceDto.media);
+    if (media == null) throw new HttpException("Fail at media creation", 500);
+
+    newResource.creator = creator;
+    newResource.discipline = discipline;
 
     this.resourceRepo.create(newResource);
     this.resourceRepo.save(newResource);
@@ -31,25 +46,41 @@ export class ResourcesService {
     return newResource;
   }
 
-  findAll() {
-    return `This action returns all resources`;
+  async findAll(): Promise<Resource[]> {
+    return await this.resourceRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} resource`;
+  async findOne(id: number): Promise<Resource> {
+    const resource = await this.resourceRepo.findOne({
+      where: { id },
+      relations: ["Discipline", "Media"],
+    });
+    if (resource == null) throw new HttpException("Resource not found", 404);
+
+    return resource;
   }
 
-  update(id: number, updateResourceDto: UpdateResourceDto) {
-    return `This action updates a #${id} resource`;
-  }
+  // update(id: number, updateResourceDto: UpdateResourceDto) {
+  //   return `This action updates a #${id} resource`;
+  // }
 
   async remove(id: number): Promise<string> {
     const resource = await this.resourceRepo.findOne({
       where: { id },
+      relations: ["Media"],
     });
 
+    if (resource == null) throw new HttpException("Resource not found", 404);
+
     resource.deletedAt = new Date();
+
+    resource.media.forEach((mediaAlocated) => {
+      mediaAlocated.deletedAt = new Date();
+      this.disciplineService.remove(mediaAlocated.id);
+    });
+
     this.resourceRepo.delete(resource);
+    this.resourceRepo.save(resource);
 
     return "Success";
   }

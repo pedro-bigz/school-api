@@ -23,6 +23,9 @@ export class Media {
   @Column({ length: 256 })
   filename: string;
 
+  @Column({ length: 256 })
+  address: string; //could be link or path
+
   @CreateDateColumn({ type: "timestamp", nullable: true })
   createdAt: Date;
 
@@ -31,9 +34,6 @@ export class Media {
 
   @DeleteDateColumn({ type: "timestamp", nullable: true })
   deletedAt: Date;
-
-  // @RelationId((resource: Resource) => resource.media)
-  // resourceId: number;
 
   @ManyToOne(() => Resource, (resource) => resource.id)
   resource: Resource;
