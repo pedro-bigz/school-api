@@ -34,8 +34,8 @@ export class ResourcesService {
 
     const creator = await this.userService.findById(creatorId);
 
-    const media = await this.mediaService.create(createResourceDto.media);
-    if (media == null) throw new HttpException("Fail at media creation", 500);
+    // const media = await this.mediaService.create(createResourceDto.media);
+    // if (media == null) throw new HttpException("Fail at media creation", 500);
 
     newResource.creator = creator;
     newResource.discipline = discipline;

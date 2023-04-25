@@ -15,6 +15,5 @@ export class CreateMediaDto {
   address: string; //could be link or path
   @ApiProperty()
   @IsNumber()
-  @IsNotEmpty()
   resourceId: number;
 }
