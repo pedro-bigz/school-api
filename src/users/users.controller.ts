@@ -19,8 +19,9 @@ import PermissionsGuard from "@app/permissions/permissions.guard";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post("register")
   create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto)
     return this.usersService.create(createUserDto);
   }
 

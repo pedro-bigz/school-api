@@ -50,7 +50,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
         Discipline,
         Media,
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
     AuthModule,
