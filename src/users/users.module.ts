@@ -12,7 +12,6 @@ import { RoleHasPermissionsModule } from "@app/role_has_permissions/role_has_per
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    ResourcesModule,
     ModelHasRolesModule,
     RoleHasPermissionsModule,
   ],

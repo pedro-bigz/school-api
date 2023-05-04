@@ -62,10 +62,10 @@ export class MediaController {
     return this.mediaService.findOne(+id);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return this.mediaService.update(+id, updateMediaDto);
-  }
+  // @Patch(":id")
+  // update(@Param("id") id: string, @Body() updateMediaDto: UpdateMediaDto) {
+  //   return this.mediaService.update(+id, updateMediaDto);
+  // }
 
   @Delete(":id")
   remove(@Param("id") id: string) {

@@ -4,7 +4,8 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { UserRepository } from "./users.repository";
 import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
-import { hash } from 'bcrypt';
+import { hash } from "bcrypt";
+import { Sex } from "./enums/sex_enum";
 
 @Injectable()
 export class UsersService {
@@ -59,10 +60,14 @@ export class UsersService {
 
     newUser.firstName = createUserDto.firstName;
     newUser.lastName = createUserDto.lastName;
-    newUser.password = await hash(createUserDto.password, parseInt(process.env.HASH_SALT));
+    newUser.password = await hash(
+      createUserDto.password,
+      parseInt(process.env.HASH_SALT)
+    );
     newUser.email = createUserDto.email;
-    newUser.createdAt = newUser.updatedAt = new Date();
+    newUser.createdAt = new Date();
     newUser.activated = true;
+    newUser.sex = Sex[createUserDto.sex];
 
     this.userRepo.create(newUser);
     this.userRepo.save(newUser);
@@ -84,14 +89,12 @@ export class UsersService {
 
     if (user == null) throw new HttpException("User not found", 404);
 
-    const nameArr = updateUserDto.name.split(" ");
-
-    user.firstName = nameArr[0];
-    user.lastName = nameArr[nameArr.length - 1];
+    user.firstName = updateUserDto.firstName;
+    user.lastName = updateUserDto.lastName;
     user.password = updateUserDto.password;
     user.email = updateUserDto.email;
+    user.sex = Sex[updateUserDto.sex];
     user.updatedAt = new Date();
-    user.activated = true;
 
     await this.userRepo.update({ email }, user);
     this.userRepo.save(user);
@@ -107,6 +110,7 @@ export class UsersService {
     if (user == null) throw new HttpException("User not found", 404);
 
     user.deletedAt = new Date();
+    user.activated = false;
 
     this.userRepo.delete(user);
     this.userRepo.save(user);

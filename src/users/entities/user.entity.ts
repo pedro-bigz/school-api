@@ -11,7 +11,7 @@ import {
   DeleteDateColumn,
 } from "typeorm";
 
-@Entity({ name: "users" })
+@Entity({ name: "user" })
 export class User {
   @PrimaryGeneratedColumn({ type: "bigint", unsigned: true })
   id: number;
@@ -33,6 +33,9 @@ export class User {
 
   @Column({ default: false })
   forbidden: boolean;
+
+  @Column({ length: 15 })
+  sex: string;
 
   @Column({ type: "timestamp", nullable: true })
   lastLoginAt: Date;
