@@ -68,6 +68,7 @@ export class UsersService {
     newUser.createdAt = new Date();
     newUser.activated = true;
     newUser.sex = Sex[createUserDto.sex];
+    newUser.register_number = createUserDto.ufuRegister;
 
     this.userRepo.create(newUser);
     this.userRepo.save(newUser);
@@ -94,6 +95,7 @@ export class UsersService {
     user.password = updateUserDto.password;
     user.email = updateUserDto.email;
     user.sex = Sex[updateUserDto.sex];
+    user.register_number = updateUserDto.ufuRegister;
     user.updatedAt = new Date();
 
     await this.userRepo.update({ email }, user);
