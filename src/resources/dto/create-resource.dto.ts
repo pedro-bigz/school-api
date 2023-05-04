@@ -23,6 +23,6 @@ export class CreateResourceDto {
   @IsNumber()
   disciplineId: number;
 
-  // @ApiProperty({ type: CreateMediaDto, isArray: false })
-  // media: CreateMediaDto;
+  @ApiProperty({ type: CreateMediaDto, isArray: false })
+  media: CreateMediaDto;
 }

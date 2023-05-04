@@ -1,14 +1,18 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { UpdateMediaDto } from "./dto/update-media.dto";
 import { Media } from "./entities/media.entity";
-import { ResourceRepository } from "@app/resources/resources.repository";
 import { Resource } from "@app/resources/entities/resource.entity";
 import { MediaRepository } from "./media.repository";
+import { ResourcesService } from "@app/resources/resources.service";
 
 @Injectable()
 export class MediaService {
-  constructor(private readonly mediaRepository: MediaRepository) {}
+  constructor(
+    @Inject(forwardRef(() => ResourcesService))
+    private readonly resourcesService: ResourcesService,
+    private readonly mediaRepository: MediaRepository
+  ) {}
 
   async create(
     createMediaDto: CreateMediaDto,

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { ResourcesService } from "./resources.service";
 import { ResourcesController } from "./resources.controller";
 import { Resource } from "./entities/resource.entity";
@@ -15,9 +15,10 @@ import { DisciplineModule } from "@app/discipline/discipline.module";
     TypeOrmModule.forFeature([Resource, User, Media]),
     UsersModule,
     DisciplineModule,
-    MediaModule,
+    forwardRef(() => MediaModule),
   ],
   controllers: [ResourcesController],
   providers: [ResourcesService, ResourceRepository],
+  exports: [ResourcesService],
 })
 export class ResourcesModule {}
