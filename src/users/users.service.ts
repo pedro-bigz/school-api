@@ -93,6 +93,7 @@ export class UsersService {
     user.lastName = updateUserDto.lastName;
     user.password = updateUserDto.password;
     user.email = updateUserDto.email;
+    user.sex = Sex[updateUserDto.sex];
     user.updatedAt = new Date();
 
     await this.userRepo.update({ email }, user);

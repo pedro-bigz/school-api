@@ -15,7 +15,7 @@ import { ResourcesModule } from "@app/resources/resources.module";
     forwardRef(() => ResourcesModule),
   ],
   controllers: [MediaController],
-  exports: [MediaService],
+  exports: [MediaService, MediaRepository],
   providers: [MediaService, MediaRepository],
 })
 export class MediaModule {}
