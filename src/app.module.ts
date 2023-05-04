@@ -14,7 +14,6 @@ import { DisciplineModule } from "./discipline/discipline.module";
 import { MediaModule } from "./media/media.module";
 import { PermissionsModule } from "./permissions/permissions.module";
 import { RoleHasPermissionsModule } from "./role_has_permissions/role_has_permissions.module";
-import { MediaController } from "./media/media.controller";
 import { Discipline } from "./discipline/entities/discipline.entity";
 import { Media } from "./media/entities/media.entity";
 import { User } from "./users/entities/user.entity";
@@ -23,7 +22,6 @@ import { Resource } from "./resources/entities/resource.entity";
 import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
 import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
 import { Permission } from "./permissions/entities/permission.entity";
-import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -50,7 +48,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
         Discipline,
         Media,
       ],
-      synchronize: false,
+      synchronize: true,
     }),
     UsersModule,
     AuthModule,

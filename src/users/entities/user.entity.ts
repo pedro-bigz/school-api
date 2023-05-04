@@ -9,7 +9,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  Unique,
 } from "typeorm";
 
 @Entity({ name: "user" })
@@ -38,7 +37,7 @@ export class User {
   @Column({ length: 15 })
   sex: string;
 
-  @Column({ length: 11 })
+  @Column({ length: 11, unique: true })
   register_number: string;
 
   @Column({ type: "timestamp", nullable: true })
