@@ -30,10 +30,13 @@ export class ResourcesController {
     return this.resourcesService.create(createResourceDto);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateResourceDto: UpdateResourceDto) {
-  //   return this.resourcesService.update(+id, updateResourceDto);
-  // }
+  @Patch(":id")
+  update(
+    @Param("id") id: string,
+    @Body() updateResourceDto: UpdateResourceDto
+  ) {
+    return this.resourcesService.update(+id, updateResourceDto);
+  }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
