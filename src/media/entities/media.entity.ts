@@ -2,13 +2,10 @@ import { Resource } from "@app/resources/entities/resource.entity";
 import {
   Entity,
   Column,
-  OneToMany,
-  JoinColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  RelationId,
   ManyToOne,
 } from "typeorm";
 
@@ -18,13 +15,22 @@ export class Media {
   id: number;
 
   @Column({ length: 256 })
-  media_type: string;
+  model_type: string;
+
+  @Column()
+  model_id: number;
+
+  @Column({ length: 100 })
+  collection_name: string;
+
+  @Column({ length: 256 })
+  metadata: string;
 
   @Column({ length: 256 })
   filename: string;
 
   @Column({ length: 256 })
-  address: string; //could be link or path
+  disk: string; //could be link or path
 
   @CreateDateColumn({ type: "timestamp", nullable: true })
   createdAt: Date;

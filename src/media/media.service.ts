@@ -14,16 +14,16 @@ export class MediaService {
 
   async create(createMediaDto: CreateMediaDto): Promise<Media> {
     const media = new Media();
+    media.collection_name = createMediaDto.collection_name;
     media.filename = createMediaDto.filename;
-    media.address = createMediaDto.address;
-    media.media_type = createMediaDto.media_type;
+    media.disk = createMediaDto.disk;
+    media.model_type = createMediaDto.model_type;
+    media.metadata = createMediaDto.metadata;
+    media.model_id = createMediaDto.model_id;
 
     const resource = await this.resourcesService.findOne(
       createMediaDto.resourceId
     );
-
-    if (resource == null)
-      throw new HttpException("Fail at resource creation", 500);
 
     if (resource != null) media.resource = resource;
 

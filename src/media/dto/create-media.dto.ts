@@ -4,15 +4,33 @@ export class CreateMediaDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  media_type: string;
+  model_type: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  model_id: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  collection_name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  metadata: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   filename: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  address: string; //could be link or path
+  disk: string;
+
   @ApiProperty()
   @IsNumber()
   resourceId: number;
