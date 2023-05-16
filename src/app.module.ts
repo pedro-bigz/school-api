@@ -24,6 +24,8 @@ import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
 import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
 import { Permission } from "./permissions/entities/permission.entity";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
+import { ProfessorModule } from './professor/professor.module';
+import { Professor } from "./professor/entities/professor.entity";
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -43,6 +45,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
       entities: [
         User,
         Role,
+        Professor,
         Resource,
         Permission,
         ModelHasRole,
@@ -50,7 +53,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
         Discipline,
         Media,
       ],
-      synchronize: false,
+      synchronize: true,
     }),
     UsersModule,
     AuthModule,
@@ -61,6 +64,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
     RoleHasPermissionsModule,
     DisciplineModule,
     MediaModule,
+    ProfessorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
