@@ -22,6 +22,7 @@ import { Resource } from "./resources/entities/resource.entity";
 import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
 import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
 import { Permission } from "./permissions/entities/permission.entity";
+import { S3Module } from "./s3/s3Bucket.module";
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -59,6 +60,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
     RoleHasPermissionsModule,
     DisciplineModule,
     MediaModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],
