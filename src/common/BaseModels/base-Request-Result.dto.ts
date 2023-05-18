@@ -7,7 +7,9 @@ export class BaseRequestResult {
     message: string,
     data: object | undefined | null = null
   ) {
-    (statusCode = statusCode), (message = message), (data = data);
+    (this.status_code = statusCode),
+      (this.message = message),
+      (this.data = data);
   }
 
   @ApiProperty()

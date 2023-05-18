@@ -40,11 +40,13 @@ export class UsersController {
   async list() {
     try {
       const result = await this.usersService.list();
-      return new BaseRequestResult(
+      const response = new BaseRequestResult(
         HttpStatus.OK,
         BaseRequestMessages.Found,
         result
       );
+      console.log({ response });
+      return response;
     } catch (e) {
       return e;
     }
