@@ -8,26 +8,46 @@ import {
   Delete,
   UseGuards,
   Request,
+  HttpStatus,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import PermissionsGuard from "@app/permissions/permissions.guard";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post("register")
-  create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto)
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    try {
+      const result = await this.usersService.create(createUserDto);
+      return new BaseRequestResult(
+        HttpStatus.CREATED,
+        BaseRequestMessages.Created,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get()
-  list() {
-    return this.usersService.list();
+  async list() {
+    try {
+      const result = await this.usersService.list();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -36,18 +56,41 @@ export class UsersController {
     return req.user;
   }
   @Get(":id")
-  find(@Param("id") id: string) {
-    return this.usersService.findById(+id);
+  async find(@Param("id") id: string) {
+    try {
+      const result = await this.usersService.findById(+id);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      const result = await this.usersService.update(+id, updateUserDto);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Updated,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param("id") id: string) {
+    try {
+      await this.usersService.remove(+id);
+      return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e) {
+      return e;
+    }
   }
 }
 

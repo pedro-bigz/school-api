@@ -13,13 +13,12 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  HttpStatus,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Str } from "@app/utils/str";
 import { File } from "@app/utils/file";
-
-const fs = require("fs");
-const path = require("path");
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
 
 @Controller("media")
 export class MediaController {
@@ -48,18 +47,45 @@ export class MediaController {
   }
 
   @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
+  async create(@Body() createMediaDto: CreateMediaDto) {
+    try {
+      const result = await this.mediaService.create(createMediaDto);
+      return new BaseRequestResult(
+        HttpStatus.CREATED,
+        BaseRequestMessages.Created,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.mediaService.findAll();
+  async findAll() {
+    try {
+      const result = await this.mediaService.findAll();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.mediaService.findOne(+id);
+  async findOne(@Param("id") id: string) {
+    try {
+      const result = await this.mediaService.findAll();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   // @Patch(":id")
@@ -68,7 +94,12 @@ export class MediaController {
   // }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.mediaService.remove(+id);
+  async remove(@Param("id") id: string) {
+    try {
+      await this.mediaService.remove(+id);
+      return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e) {
+      return e;
+    }
   }
 }
