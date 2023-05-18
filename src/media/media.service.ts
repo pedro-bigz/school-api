@@ -1,4 +1,10 @@
-import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from "@nestjs/common";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { Media } from "./entities/media.entity";
 import { MediaRepository } from "./media.repository";
