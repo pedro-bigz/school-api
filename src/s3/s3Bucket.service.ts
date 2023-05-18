@@ -4,8 +4,6 @@ import { S3 } from "aws-sdk";
 
 @Injectable()
 export class UploadS3Service {
-  constructor() {}
-
   async uploadFileToBucket(
     keyOfFile: string,
     dataBuffer: Buffer,
