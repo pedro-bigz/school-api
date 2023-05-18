@@ -1,4 +1,10 @@
-import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from "@nestjs/common";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { Media } from "./entities/media.entity";
 import { MediaRepository } from "./media.repository";
@@ -20,6 +26,9 @@ export class MediaService {
     media.model_type = createMediaDto.model_type;
     media.metadata = createMediaDto.metadata;
     media.model_id = createMediaDto.model_id;
+
+    if (createMediaDto.resourceId == null)
+      throw new HttpException("Resource not found!", HttpStatus.NOT_FOUND);
 
     const resource = await this.resourcesService.findOne(
       createMediaDto.resourceId
