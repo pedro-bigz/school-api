@@ -37,15 +37,15 @@ export class MediaService {
 
     if (resource != null) media.resource = resource;
 
-    const myFile = await this.readFile(media.disk);
+    const myFile = fs.readFileSync(media.disk);
 
-    const file = Buffer.from(myFile, "base64");
-
-    await this.uploadS3Service.uploadFileToBucket(
-      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`,
-      file,
+    const uploadResult = await this.uploadS3Service.uploadFileToBucket(
+      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}.${media.metadata}`,
+      myFile,
       process.env.AWS_BUCKET_NAME
     );
+
+    media.disk = uploadResult.Location;
 
     this.mediaRepository.create(media);
 
@@ -74,17 +74,5 @@ export class MediaService {
     this.mediaRepository.save(media);
 
     return "Deleted successfully";
-  }
-
-  private readFile(filePath: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, "utf8", (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    });
   }
 }
