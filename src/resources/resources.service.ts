@@ -6,6 +6,9 @@ import { Resource } from "./entities/resource.entity";
 import { UsersService } from "@app/users/users.service";
 import { DisciplineService } from "@app/discipline/discipline.service";
 import { MediaService } from "@app/media/media.service";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
+import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 @Injectable()
 export class ResourcesService {
   constructor(
@@ -53,6 +56,46 @@ export class ResourcesService {
 
   async findAll(): Promise<Resource[]> {
     return await this.resourceRepo.find();
+  }
+
+  async findAllPaginated(
+    params: BaseListiningRequest<ResourceFilter>
+  ): Promise<BaseListiningRequestResult<Resource>> {
+    const take = params.take || 10;
+    const skip = params.take * (params.page - 1) || 0;
+    const query = this.resourceRepo.createQueryBuilder("resource");
+
+    if (params.filters != null) {
+      if (params.filters.title != null)
+        query.where("resources.title like :title", {
+          title: params.filters.title,
+        });
+
+      if (params.filters.description != null)
+        query.where("resources.description like :desc", {
+          desc: params.filters.description,
+        });
+
+      if (params.filters.disciplineId != null)
+        query
+          .leftJoin("discipline.id", "discipline")
+          .where("discipline.id = id", { id: params.filters.disciplineId });
+
+      if (params.filters.creatorId != null)
+        query.where("resources.creatorId = creatorId", {
+          creatorId: params.filters.creatorId,
+        });
+    }
+    const total = await query.getCount();
+
+    const data = await query.skip(skip).take(take).getMany();
+
+    return new BaseListiningRequestResult<Resource>(
+      data,
+      params.page,
+      take,
+      total
+    );
   }
 
   async findOne(id: number): Promise<Resource> {

@@ -11,8 +11,8 @@ import {
 import { DisciplineService } from "./discipline.service";
 import { CreateDisciplineDto } from "./dto/create-discipline.dto";
 import { UpdateDisciplineDto } from "./dto/update-discipline.dto";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 
 @Controller("discipline")
 export class DisciplineController {

@@ -15,8 +15,8 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import PermissionsGuard from "@app/permissions/permissions.guard";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
 
 @Controller("users")
 export class UsersController {

@@ -11,8 +11,10 @@ import {
 import { ResourcesService } from "./resources.service";
 import { CreateResourceDto } from "./dto/create-resource.dto";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
 
 @Controller("resources")
 export class ResourcesController {
@@ -22,6 +24,24 @@ export class ResourcesController {
   async list() {
     try {
       const result = await this.resourcesService.findAll();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Post()
+  async listPaginated(
+    @Body() parametersOfSearch: BaseListiningRequest<ResourceFilter>
+  ) {
+    try {
+      const result = await this.resourcesService.findAllPaginated(
+        parametersOfSearch
+      );
       return new BaseRequestResult(
         HttpStatus.OK,
         BaseRequestMessages.Found,

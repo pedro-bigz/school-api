@@ -17,8 +17,8 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { File } from "@app/utils/file";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 
 @Controller("media")
 export class MediaController {
