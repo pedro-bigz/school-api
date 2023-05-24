@@ -7,12 +7,14 @@ import { Media } from "./entities/media.entity";
 import { UsersModule } from "@app/users/users.module";
 import { MediaRepository } from "./media.repository";
 import { ResourcesModule } from "@app/resources/resources.module";
+import { S3Module } from "@app/s3/s3Bucket.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Resource, Media]),
     UsersModule,
     forwardRef(() => ResourcesModule),
+    S3Module,
   ],
   controllers: [MediaController],
   exports: [MediaService, MediaRepository],
