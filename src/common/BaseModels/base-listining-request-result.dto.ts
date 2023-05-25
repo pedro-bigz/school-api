@@ -1,13 +1,29 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsArray, IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  Max,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
 
 export class BaseListiningRequestResult<T> {
-  constructor(data: T[], page: number, take: number, total: number) {
+  constructor(
+    data: T[],
+    page: number,
+    per_page: number,
+    num_pages: number,
+    next_page: boolean,
+    prev_page: boolean
+  ) {
     this.data = data;
     this.page = page;
-    this.take = take;
-    this.total = total;
+    this.per_page = per_page;
+    this.num_pages = num_pages;
+    this.next_page = next_page;
+    this.prev_page = prev_page;
   }
 
   @ApiPropertyOptional({
@@ -30,12 +46,20 @@ export class BaseListiningRequestResult<T> {
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 10;
+  per_page?: number = 10;
 
   @Type(() => Number)
   @IsInt()
   @IsOptional()
-  total?: number;
+  num_pages?: number;
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  next_page: boolean;
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  prev_page: boolean;
 
   @IsArray()
   @ApiProperty({ isArray: true })

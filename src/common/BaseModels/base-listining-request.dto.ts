@@ -4,8 +4,16 @@ import { IsArray, IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
 import { Type } from "class-transformer";
 
 export class BaseListiningRequest<T> {
-  constructor(order: Order, page: number = null, take: number = null) {
-    (this.order = order), (this.page = page), (this.take = take);
+  constructor(
+    order: Order,
+    page: number = null,
+    per_page: number = null,
+    filters: T
+  ) {
+    (this.order = order),
+      (this.page = page),
+      (this.per_page = per_page),
+      (this.filters = filters);
   }
 
   @ApiPropertyOptional({ enum: Order, default: Order.ASC })
@@ -33,7 +41,7 @@ export class BaseListiningRequest<T> {
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 10;
+  per_page?: number = 10;
 
   @ApiProperty()
   @IsArray()

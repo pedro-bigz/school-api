@@ -1,24 +1,26 @@
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { MediaService } from "./media.service";
 import { CreateMediaDto } from "./dto/create-media.dto";
-import { UpdateMediaDto } from "./dto/update-media.dto";
 import {
   Controller,
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UploadedFile,
   UseGuards,
   UseInterceptors,
   HttpStatus,
+  Query,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { File } from "@app/utils/file";
 import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { MediaFilter } from "./dto/media-filter.dto";
 
 @Controller("media")
 export class MediaController {
@@ -77,7 +79,7 @@ export class MediaController {
   @Get(":id")
   async findOne(@Param("id") id: string) {
     try {
-      const result = await this.mediaService.findAll();
+      const result = await this.mediaService.findOne(+id);
       return new BaseRequestResult(
         HttpStatus.OK,
         BaseRequestMessages.Found,
@@ -88,16 +90,35 @@ export class MediaController {
     }
   }
 
-  // @Patch(":id")
-  // update(@Param("id") id: string, @Body() updateMediaDto: UpdateMediaDto) {
-  //   return this.mediaService.update(+id, updateMediaDto);
-  // }
-
   @Delete(":id")
   async remove(@Param("id") id: string) {
     try {
       await this.mediaService.remove(+id);
       return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Post("/paginated")
+  async listPaginated(
+    @Query("order") order: Order,
+    @Query("page") page: number,
+    @Query("take") take: number,
+    @Body() filter: MediaFilter
+  ) {
+    try {
+      const parametersOfSearch: BaseListiningRequest<MediaFilter> =
+        new BaseListiningRequest<MediaFilter>(order, page, take, filter);
+
+      const result = await this.mediaService.findAllPaginated(
+        parametersOfSearch
+      );
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
     } catch (e) {
       return e;
     }

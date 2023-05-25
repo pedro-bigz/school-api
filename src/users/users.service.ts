@@ -6,6 +6,9 @@ import { UserRepository } from "./users.repository";
 import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
 import { hash } from "bcrypt";
 import { Sex } from "./enums/sex_enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { UserFilter } from "./dto/user-filter.dto";
+import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 
 @Injectable()
 export class UsersService {
@@ -118,5 +121,49 @@ export class UsersService {
     this.userRepo.save(user);
 
     return "Deleted Successfully";
+  }
+
+  async findAllPaginated(
+    params: BaseListiningRequest<UserFilter>
+  ): Promise<BaseListiningRequestResult<User>> {
+    const per_page = params.per_page || 10;
+    const skip = params.per_page * (params.page - 1) || 0;
+    const query = this.userRepo.createQueryBuilder("user");
+
+    if (params.filters.firstName != null)
+      query.where("user.firstName like :firstName", {
+        firstName: params.filters.firstName,
+      });
+
+    if (params.filters.lastName != null)
+      query.where("user.lastName like :lastName", {
+        lastName: params.filters.lastName,
+      });
+
+    if (params.filters.email != null)
+      query.where("user.email like :email", { email: params.filters.email });
+
+    if (params.filters.register_number != null)
+      query.where("user.register_number like :register_number", {
+        register_number: params.filters.register_number,
+      });
+
+    if (params.filters.sex != null)
+      query.where("user.sex = sex", { sex: Sex[params.filters.sex] });
+
+    const total = await query.getCount();
+    const num_pages = total / per_page;
+    const data = await query.skip(skip).take(per_page).getMany();
+    const next_page = num_pages > params.page;
+    const prev_page = params.page > 1;
+
+    return new BaseListiningRequestResult<User>(
+      data,
+      params.page,
+      per_page,
+      num_pages,
+      next_page,
+      prev_page
+    );
   }
 }

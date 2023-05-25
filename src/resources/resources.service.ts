@@ -61,40 +61,44 @@ export class ResourcesService {
   async findAllPaginated(
     params: BaseListiningRequest<ResourceFilter>
   ): Promise<BaseListiningRequestResult<Resource>> {
-    const take = params.take || 10;
-    const skip = params.take * (params.page - 1) || 0;
+    const per_page = params.per_page || 10;
+    const skip = params.per_page * (params.page - 1) || 0;
     const query = this.resourceRepo.createQueryBuilder("resource");
 
     if (params.filters != null) {
       if (params.filters.title != null)
-        query.where("resources.title like :title", {
+        query.where("resource.title like :title", {
           title: params.filters.title,
         });
 
       if (params.filters.description != null)
-        query.where("resources.description like :desc", {
+        query.where("resource.description like :desc", {
           desc: params.filters.description,
         });
 
       if (params.filters.disciplineId != null)
         query
-          .leftJoin("discipline.id", "discipline")
-          .where("discipline.id = id", { id: params.filters.disciplineId });
+          .leftJoin("resource.discipline", "disc")
+          .where("disc.id = id", { id: params.filters.disciplineId });
 
       if (params.filters.creatorId != null)
-        query.where("resources.creatorId = creatorId", {
+        query.where("resource.creatorId = creatorId", {
           creatorId: params.filters.creatorId,
         });
     }
     const total = await query.getCount();
-
-    const data = await query.skip(skip).take(take).getMany();
+    const num_pages = total / per_page;
+    const data = await query.skip(skip).take(per_page).getMany();
+    const next_page = num_pages > params.page;
+    const prev_page = params.page > 1;
 
     return new BaseListiningRequestResult<Resource>(
       data,
       params.page,
-      take,
-      total
+      per_page,
+      num_pages,
+      next_page,
+      prev_page
     );
   }
 

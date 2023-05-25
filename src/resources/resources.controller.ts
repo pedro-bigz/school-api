@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpStatus,
+  Query,
 } from "@nestjs/common";
 import { ResourcesService } from "./resources.service";
 import { CreateResourceDto } from "./dto/create-resource.dto";
@@ -15,6 +16,7 @@ import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dt
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { ResourceFilter } from "./dto/resource-filter.dto";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 
 @Controller("resources")
 export class ResourcesController {
@@ -34,11 +36,17 @@ export class ResourcesController {
     }
   }
 
-  @Post()
+  @Post("/paginated")
   async listPaginated(
-    @Body() parametersOfSearch: BaseListiningRequest<ResourceFilter>
+    @Query("order") order: Order,
+    @Query("page") page: number,
+    @Query("take") take: number,
+    @Body() filter: ResourceFilter
   ) {
     try {
+      const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
+        new BaseListiningRequest<ResourceFilter>(order, page, take, filter);
+
       const result = await this.resourcesService.findAllPaginated(
         parametersOfSearch
       );
