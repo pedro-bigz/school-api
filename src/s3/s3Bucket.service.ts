@@ -19,9 +19,6 @@ export class UploadS3Service {
       },
     });
 
-    console.log(s3.config.credentials.accessKeyId);
-    console.log(s3.config.credentials.secretAccessKey);
-
     const result = await s3
       .upload({
         Bucket: bucketName,
@@ -31,6 +28,7 @@ export class UploadS3Service {
       .promise();
 
     console.log(result);
+
     return result;
   }
 

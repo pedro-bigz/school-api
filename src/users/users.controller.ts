@@ -9,14 +9,17 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  Query,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
-import PermissionsGuard from "@app/permissions/permissions.guard";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/BaseRequestMessages.enum";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { UserFilter } from "./dto/user-filter.dto";
 
 @Controller("users")
 export class UsersController {
@@ -94,6 +97,29 @@ export class UsersController {
       return e;
     }
   }
-}
 
+  @Post("/paginated")
+  async listPaginated(
+    @Query("order") order: Order,
+    @Query("page") page: number,
+    @Query("take") take: number,
+    @Body() filter: UserFilter
+  ) {
+    try {
+      const parametersOfSearch: BaseListiningRequest<UserFilter> =
+        new BaseListiningRequest<UserFilter>(order, page, take, filter);
+
+      const result = await this.usersService.findAllPaginated(
+        parametersOfSearch
+      );
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
+  }
+}
 // @UseGuards(PermissionsGuard("teste"))
