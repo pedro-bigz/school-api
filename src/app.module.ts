@@ -1,31 +1,30 @@
-import { Module } from "@nestjs/common";
-import { DataSource } from "typeorm";
 import { AppController } from "@app/app.controller";
 import { AppService } from "@app/app.service";
-import { UsersModule } from "@app/users/users.module";
 import { AuthModule } from "@app/auth/auth.module";
-import { ResourcesModule } from "@app/resources/resources.module";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { RolesModule } from "@app/roles/roles.module";
-import { ModelHasRolesModule } from "@app/model_has_roles/model_has_roles.module";
-import { ConfigModule } from "@nestjs/config";
 import { getEnvPath } from "@app/common/helper/env.helper";
-import { DisciplineModule } from "./discipline/discipline.module";
-import { MediaModule } from "./media/media.module";
-import { PermissionsModule } from "./permissions/permissions.module";
-import { RoleHasPermissionsModule } from "./role_has_permissions/role_has_permissions.module";
-import { MediaController } from "./media/media.controller";
-import { Discipline } from "./discipline/entities/discipline.entity";
+import { ModelHasRolesModule } from "@app/model_has_roles/model_has_roles.module";
+import { ResourcesModule } from "@app/resources/resources.module";
+import { RolesModule } from "@app/roles/roles.module";
+import { UsersModule } from "@app/users/users.module";
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
 import { Media } from "./media/entities/media.entity";
-import { User } from "./users/entities/user.entity";
-import { Role } from "./roles/entities/role.entity";
-import { Resource } from "./resources/entities/resource.entity";
+import { MediaModule } from "./media/media.module";
 import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
-import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
 import { Permission } from "./permissions/entities/permission.entity";
-import { JwtAuthGuard } from "./auth/jwt-auth.guard";
-import { ProfessorModule } from './professor/professor.module';
+import { PermissionsModule } from "./permissions/permissions.module";
 import { Professor } from "./professor/entities/professor.entity";
+import { ProfessorModule } from './professor/professor.module';
+import { Resource } from "./resources/entities/resource.entity";
+import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
+import { RoleHasPermissionsModule } from "./role_has_permissions/role_has_permissions.module";
+import { Role } from "./roles/entities/role.entity";
+import { S3Module } from "./s3/s3Bucket.module";
+import { Subject } from "./subject/entities/subject.entity";
+import { SubjectModule } from "./subject/subject.module";
+import { User } from "./users/entities/user.entity";
 
 type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
 
@@ -50,7 +49,7 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
         Permission,
         ModelHasRole,
         RoleHasPermission,
-        Discipline,
+        Subject,
         Media,
       ],
       synchronize: true,
@@ -62,9 +61,10 @@ type TypeOrmModuleOptionType = "mysql" | "mariadb" | "postgres";
     RolesModule,
     PermissionsModule,
     RoleHasPermissionsModule,
-    DisciplineModule,
+    SubjectModule,
     MediaModule,
     ProfessorModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,11 +3,12 @@ import { CreateUserDto } from "./create-user.dto";
 import {
   IsBoolean,
   IsString,
-  IsInt,
   IsEmail,
   IsNotEmpty,
+  IsEnum,
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Sex } from "../enums/sex_enum";
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty()
@@ -23,10 +24,20 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  name: string;
+  firstName: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsBoolean()
-  activated: boolean;
+  @IsString()
+  lastName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  ufuRegister: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(Sex)
+  sex: Sex;
 }

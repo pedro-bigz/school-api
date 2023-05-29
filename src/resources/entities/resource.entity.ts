@@ -1,16 +1,16 @@
-import { Discipline } from "@app/discipline/entities/discipline.entity";
 import { Media } from "@app/media/entities/media.entity";
+import { Subject } from "@app/subject/entities/subject.entity";
 import { User } from "@app/users/entities/user.entity";
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
   ManyToOne,
-  RelationId,
   OneToMany,
+  PrimaryGeneratedColumn,
+  RelationId,
+  UpdateDateColumn,
 } from "typeorm";
 
 @Entity({ name: "resources" })
@@ -42,11 +42,8 @@ export class Resource {
   @ManyToOne(() => User, (user) => user.id)
   creator: User;
 
-  // @RelationId((resource: Resource) => resource.discipline)
-  // disciplineId: number;
-
-  @ManyToOne(() => Discipline, (discipline) => discipline.id)
-  discipline: Discipline;
+  @ManyToOne(() => Subject, (subject) => subject.id)
+  subject: Subject;
 
   @OneToMany(() => Media, (media) => media.resource)
   media: Media[];

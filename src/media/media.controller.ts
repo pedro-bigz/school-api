@@ -1,25 +1,26 @@
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
-import { MediaService } from "./media.service";
-import { CreateMediaDto } from "./dto/create-media.dto";
-import { UpdateMediaDto } from "./dto/update-media.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { File } from "@app/utils/file";
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Str } from "@app/utils/str";
-import { File } from "@app/utils/file";
-
-const fs = require("fs");
-const path = require("path");
+import { CreateMediaDto } from "./dto/create-media.dto";
+import { MediaFilter } from "./dto/media-filter.dto";
+import { MediaService } from "./media.service";
 
 @Controller("media")
 export class MediaController {
@@ -48,27 +49,78 @@ export class MediaController {
   }
 
   @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
+  async create(@Body() createMediaDto: CreateMediaDto) {
+    try {
+      const result = await this.mediaService.create(createMediaDto);
+      return new BaseRequestResult(
+        HttpStatus.CREATED,
+        BaseRequestMessages.Created,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.mediaService.findAll();
+  async findAll() {
+    try {
+      const result = await this.mediaService.findAll();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.mediaService.findOne(+id);
-  }
-
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return this.mediaService.update(+id, updateMediaDto);
+  async findOne(@Param("id") id: string) {
+    try {
+      const result = await this.mediaService.findOne(+id);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.mediaService.remove(+id);
+  async remove(@Param("id") id: string) {
+    try {
+      await this.mediaService.remove(+id);
+      return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Post("/paginated")
+  async listPaginated(
+    @Query("order") order: Order,
+    @Query("page") page: number,
+    @Query("take") take: number,
+    @Body() filter: MediaFilter
+  ) {
+    try {
+      const parametersOfSearch: BaseListiningRequest<MediaFilter> =
+        new BaseListiningRequest<MediaFilter>(order, page, take, filter);
+
+      const result = await this.mediaService.findAllPaginated(
+        parametersOfSearch
+      );
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 }

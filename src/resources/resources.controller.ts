@@ -1,34 +1,117 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ResourcesService } from './resources.service';
-import { CreateResourceDto } from './dto/create-resource.dto';
-import { UpdateResourceDto } from './dto/update-resource.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpStatus,
+  Query,
+} from "@nestjs/common";
+import { ResourcesService } from "./resources.service";
+import { CreateResourceDto } from "./dto/create-resource.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 
-@Controller('resources')
+@Controller("resources")
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) {}
 
   @Get()
-  list() {
-    return this.resourcesService.findAll();
+  async list() {
+    try {
+      const result = await this.resourcesService.findAll();
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resourcesService.findOne(+id);
+  @Post("/paginated")
+  async listPaginated(
+    @Query("order") order: Order,
+    @Query("page") page: number,
+    @Query("take") take: number,
+    @Body() filter: ResourceFilter
+  ) {
+    try {
+      const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
+        new BaseListiningRequest<ResourceFilter>(order, page, take, filter);
+
+      const result = await this.resourcesService.findAllPaginated(
+        parametersOfSearch
+      );
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
+    try {
+      const result = await this.resourcesService.findOne(+id);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
   @Post()
-  create(@Body() createResourceDto: CreateResourceDto) {
-    return this.resourcesService.create(createResourceDto);
+  async create(@Body() createResourceDto: CreateResourceDto) {
+    try {
+      const result = await this.resourcesService.create(createResourceDto);
+      return new BaseRequestResult(
+        HttpStatus.CREATED,
+        BaseRequestMessages.Created,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResourceDto: UpdateResourceDto) {
-    return this.resourcesService.update(+id, updateResourceDto);
+  @Patch(":id")
+  async update(
+    @Param("id") id: string,
+    @Body() updateResourceDto: UpdateResourceDto
+  ) {
+    try {
+      const result = await this.resourcesService.update(+id, updateResourceDto);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Updated,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resourcesService.remove(+id);
+  @Delete(":id")
+  async remove(@Param("id") id: string) {
+    try {
+      await this.resourcesService.remove(+id);
+      return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e) {
+      return e;
+    }
   }
 }
