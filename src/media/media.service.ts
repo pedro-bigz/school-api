@@ -1,3 +1,4 @@
+import { Metadata } from "@app/common/BaseModels/BaseEnums/base-metadata.enum";
 import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { Resource } from "@app/resources/entities/resource.entity";
@@ -36,10 +37,13 @@ export class MediaService {
 
     const myFile = fs.readFileSync(media.disk);
 
+    const contentType = this.defineContentType(media.metadata);
+
     const uploadResult = await this.uploadS3Service.uploadFileToBucket(
       `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}.${media.metadata}`,
       myFile,
-      process.env.AWS_BUCKET_NAME
+      process.env.AWS_BUCKET_NAME,
+      contentType
     );
 
     media.disk = uploadResult.Location;
@@ -131,5 +135,16 @@ export class MediaService {
       next_page,
       prev_page
     );
+  }
+
+  defineContentType(metadata: string): string {
+    switch (metadata) {
+      case "pdf":
+        return Metadata.pdf;
+      case "png":
+        return Metadata.png;
+      case "jpeg":
+        return Metadata.jpeg;
+    }
   }
 }

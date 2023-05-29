@@ -7,7 +7,8 @@ export class UploadS3Service {
   async uploadFileToBucket(
     keyOfFile: string,
     dataBuffer: Buffer,
-    bucketName: string
+    bucketName: string,
+    contentType: string
   ): Promise<S3.ManagedUpload.SendData> {
     const s3 = new S3();
 
@@ -24,6 +25,7 @@ export class UploadS3Service {
         Bucket: bucketName,
         Body: dataBuffer,
         Key: keyOfFile,
+        ContentType: contentType,
       })
       .promise();
 
