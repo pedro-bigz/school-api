@@ -1,17 +1,16 @@
 import { Resource } from "@app/resources/entities/resource.entity";
 import {
-  Entity,
   Column,
-  OneToMany,
-  JoinColumn,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
-@Entity({ name: "discipline" })
-export class Discipline {
+@Entity({ name: "subject" })
+export class Subject {
   @PrimaryGeneratedColumn({ type: "bigint", unsigned: true })
   id: number;
 

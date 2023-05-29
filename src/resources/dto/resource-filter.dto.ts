@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsString, IsNumber } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class ResourceFilter {
   @ApiPropertyOptional()
@@ -16,5 +16,5 @@ export class ResourceFilter {
 
   @ApiPropertyOptional()
   @IsNumber()
-  disciplineId: number;
+  subjectId: number;
 }

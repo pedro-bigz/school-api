@@ -1,14 +1,14 @@
-import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
-import { CreateMediaDto } from "./dto/create-media.dto";
-import { Media } from "./entities/media.entity";
-import { MediaRepository } from "./media.repository";
-import { ResourcesService } from "@app/resources/resources.service";
-import { UploadS3Service } from "@app/s3/s3Bucket.service";
-import * as fs from "fs";
-import { Resource } from "@app/resources/entities/resource.entity";
 import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { Resource } from "@app/resources/entities/resource.entity";
+import { ResourcesService } from "@app/resources/resources.service";
+import { UploadS3Service } from "@app/s3/s3Bucket.service";
+import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import * as fs from "fs";
+import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
+import { Media } from "./entities/media.entity";
+import { MediaRepository } from "./media.repository";
 
 @Injectable()
 export class MediaService {
