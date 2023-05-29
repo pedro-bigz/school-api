@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsInt, IsString } from "class-validator";
 
-export class DisciplineFilter {
+export class SubjectFilter {
   @ApiPropertyOptional()
   @IsString()
   name: string;

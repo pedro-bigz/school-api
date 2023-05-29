@@ -1,6 +1,6 @@
 import { CreateMediaDto } from "@app/media/dto/create-media.dto";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateResourceDto {
   @ApiProperty()
@@ -21,7 +21,7 @@ export class CreateResourceDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  disciplineId: number;
+  subjectId: number;
 
   @ApiProperty({ type: CreateMediaDto, isArray: false })
   media: CreateMediaDto;

@@ -1,20 +1,21 @@
-import { HttpException, Injectable } from "@nestjs/common";
-import { CreateResourceDto } from "./dto/create-resource.dto";
-import { UpdateResourceDto } from "./dto/update-resource.dto";
-import { ResourceRepository } from "./resources.repository";
-import { Resource } from "./entities/resource.entity";
-import { UsersService } from "@app/users/users.service";
-import { DisciplineService } from "@app/discipline/discipline.service";
-import { MediaService } from "@app/media/media.service";
-import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
-import { ResourceFilter } from "./dto/resource-filter.dto";
 import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { MediaService } from "@app/media/media.service";
+import { SubjectService } from "@app/subject/subject.service";
+import { UsersService } from "@app/users/users.service";
+import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import { CreateResourceDto } from "./dto/create-resource.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { Resource } from "./entities/resource.entity";
+import { ResourceRepository } from "./resources.repository";
 @Injectable()
 export class ResourcesService {
   constructor(
     private readonly resourceRepo: ResourceRepository,
     private readonly userService: UsersService,
-    private readonly disciplineService: DisciplineService,
+    private readonly subjectService: SubjectService,
+    @Inject(forwardRef(() => MediaService))
     private readonly mediaService: MediaService
   ) {}
 
@@ -24,7 +25,7 @@ export class ResourcesService {
   async create(createResourceDto: CreateResourceDto): Promise<Resource> {
     const newResource = new Resource();
 
-    const disciplineId = createResourceDto.disciplineId;
+    const subjectId = createResourceDto.subjectId;
     const creatorId = createResourceDto.creatorId;
 
     newResource.title = createResourceDto.title;
@@ -33,12 +34,12 @@ export class ResourcesService {
     newResource.activated = true;
     newResource.createdAt = new Date();
 
-    const discipline = await this.disciplineService.findOne(disciplineId);
+    const subject = await this.subjectService.findOne(subjectId);
 
     const creator = await this.userService.findById(creatorId);
 
     newResource.creator = creator;
-    newResource.discipline = discipline;
+    newResource.subject = subject;
 
     this.resourceRepo.create(newResource);
     const resource = await this.resourceRepo.save(newResource);
@@ -76,10 +77,10 @@ export class ResourcesService {
           desc: params.filters.description,
         });
 
-      if (params.filters.disciplineId != null)
+      if (params.filters.subjectId != null)
         query
-          .leftJoin("resource.discipline", "disc")
-          .where("disc.id = id", { id: params.filters.disciplineId });
+          .leftJoin("resource.subject", "disc")
+          .where("disc.id = id", { id: params.filters.subjectId });
 
       if (params.filters.creatorId != null)
         query.where("resource.creatorId = creatorId", {
@@ -105,7 +106,7 @@ export class ResourcesService {
   async findOne(id: number): Promise<Resource> {
     const resource = await this.resourceRepo.findOne({
       where: { id },
-      relations: ["discipline", "media"],
+      relations: ["subject", "media"],
     });
     if (resource == null) throw new HttpException("Resource not found", 404);
 
@@ -118,7 +119,7 @@ export class ResourcesService {
   ): Promise<Resource> {
     const resource = await this.resourceRepo.findOne({
       where: { id },
-      relations: ["discipline", "media"],
+      relations: ["subject", "media"],
     });
 
     (resource.description = updateResourceDto.description),
@@ -142,7 +143,7 @@ export class ResourcesService {
 
     resource.media.forEach((mediaAlocated) => {
       mediaAlocated.deletedAt = new Date();
-      this.disciplineService.remove(mediaAlocated.id);
+      this.subjectService.remove(mediaAlocated.id);
     });
 
     this.resourceRepo.delete(resource);
