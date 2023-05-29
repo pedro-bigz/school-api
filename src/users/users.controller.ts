@@ -16,7 +16,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
-import { BaseRequestResult } from "@app/common/BaseModels/base-request-result.dto";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { UserFilter } from "./dto/user-filter.dto";
