@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body,
-  Patch, Param, Delete } from '@nestjs/common';
-import { ProfessorsService } from './professor.service';
-import { CreateProfessorDto } from './dto/create-professor.dto';
-import { UpdateProfessorDto } from './dto/update-professor.dto';
+import { BaseRequestMessages } from '@app/common/BaseModels/BaseEnums/base-request-messages.enum';
+import { BaseRequestResult } from '@app/common/BaseModels/base-Request-Result.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateProfessorDto } from './dto/create-professor.dto';
+import { ProfessorsService } from './professor.service';
+import { UpdateProfessorDto } from './dto/update-professor.dto';
 
 @ApiTags('Professores')
 @Controller('professors')
@@ -11,29 +21,55 @@ export class ProfessorController {
   constructor(private readonly professorService: ProfessorsService) {}
 
   @Post()
-  create(@Body() createProfessorDto: CreateProfessorDto) {
-    return this.professorService.create(createProfessorDto);
+  async create(@Body() createProfessorDto: CreateProfessorDto) {
+    try {
+      const result = await this.professorService.create(createProfessorDto);
+      return new BaseRequestResult(
+        HttpStatus.CREATED,
+        BaseRequestMessages.Created,
+        result
+      );
+    } catch (e){
+      return e;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.professorService.findAll();
+  async findAll() {
+    try {
+      const result = await this.professorService.findAll();
+      const response = new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Found,
+        result
+      );
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateProfessorDto: UpdateProfessorDto) {
+    try {
+      const result = await this.professorService.update(+id, updateProfessorDto);
+      return new BaseRequestResult(
+        HttpStatus.OK,
+        BaseRequestMessages.Updated,
+        result
+      );
+    }
+    catch (e) {
+      return e;
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.professorService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      await this.professorService.remove(+id);
+      return new BaseRequestResult(HttpStatus.OK, BaseRequestMessages.Deleted);
+    } catch (e){
+      return e;
+    }
   }
-  
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.professorService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateProfessorDto: UpdateProfessorDto) {
-  //   return this.professorService.update(+id, updateProfessorDto);
-  // }
-
-
 }

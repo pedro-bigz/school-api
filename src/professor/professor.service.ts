@@ -46,6 +46,29 @@ export class ProfessorsService {
     return professors;
   }
 
+  async update(
+    id: number, 
+    updateProfessorDto: UpdateProfessorDto): Promise<Professor> | undefined {
+      
+      const professor = await this.professorRepo.findOne({
+        where: { id },
+      });
+
+      const email = updateProfessorDto.email;
+
+      if (professor == null) throw new HttpException("User not found", 404);
+      
+      professor.name = UpdateProfessorDto.name;
+      professor.description = updateProfessorDto.description;
+      professor.facomPageUrl = updateProfessorDto.facomPageUrl;
+      professor.photoPath = updateProfessorDto.photoPath;
+
+      await this.professorRepo.update({ email }, professor);
+      this.professorRepo.save(professor);
+
+      return professor;      
+  }
+
   async remove(id: number): Promise<string> {
     const professor = await this.professorRepo.findOne({
       where: {id},
@@ -56,13 +79,4 @@ export class ProfessorsService {
     this.professorRepo.save(professor);
     return `Deleted Successfully`;
   }
-  // findOne(id: number) {
-  //   return `This action returns a #${id} professor`;
-  // }
-
-  // update(id: number, updateProfessorDto: UpdateProfessorDto) {
-  //   return `This action updates a #${id} professor`;
-  // }
-
-
 }
