@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProfessorDto } from './dto/create-professor.dto';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
 import { Professor } from './entities/professor.entity';
@@ -17,7 +17,7 @@ export class ProfessorsService {
     });
 
     if (professor != null)
-      throw new HttpException(`Professor with email ${email} already exists`, 400);
+      throw new HttpException(`Professor with email ${email} already exists`, HttpStatus.BAD_REQUEST);
 
     const newProfessor = new Professor();
     
@@ -56,7 +56,7 @@ export class ProfessorsService {
 
       const email = updateProfessorDto.email;
 
-      if (professor == null) throw new HttpException("User not found", 404);
+      if (professor == null) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
       
       professor.name = UpdateProfessorDto.name;
       professor.description = updateProfessorDto.description;
@@ -73,7 +73,7 @@ export class ProfessorsService {
     const professor = await this.professorRepo.findOne({
       where: {id},
     });
-    if (professor == null) throw new HttpException("Professor not found", 404);
+    if (professor == null) throw new HttpException("Professor not found", HttpStatus.NOT_FOUND);
     
     this.professorRepo.delete(professor);
     this.professorRepo.save(professor);
