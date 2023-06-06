@@ -9,7 +9,7 @@ export class ProfessorsService {
   constructor( private readonly professorRepo: ProfessorRepository ){}
   
   
-  async create(createProfessorDto: CreateProfessorDto): Promise<any> | undefined {
+  async create(createProfessorDto: CreateProfessorDto): Promise<Professor  | undefined> {
     const email: string = createProfessorDto.email;
 
     const professor: Professor = await this.professorRepo.findOne({
