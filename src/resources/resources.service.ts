@@ -44,12 +44,14 @@ export class ResourcesService {
     this.resourceRepo.create(newResource);
     const resource = await this.resourceRepo.save(newResource);
 
-    if (createResourceDto.media != null) {
-      createResourceDto.media.resourceId = resource.id;
+    if (createResourceDto.media != null && createResourceDto.media.length > 0) {
+      createResourceDto.media.forEach(async (media) => {
+        media.resourceId = resource.id;
 
-      const media = await this.mediaService.create(createResourceDto.media);
+        const res = await this.mediaService.create(media);
 
-      if (media == null) throw new HttpException("Fail at media creation", 500);
+        if (res == null) throw new HttpException("Fail at media creation", 500);
+      });
     }
 
     return newResource;

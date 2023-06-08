@@ -1,4 +1,3 @@
-import { Metadata } from "@app/common/BaseModels/BaseEnums/base-metadata.enum";
 import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { Resource } from "@app/resources/entities/resource.entity";
@@ -28,6 +27,8 @@ export class MediaService {
     media.model_type = createMediaDto.model_type;
     media.metadata = createMediaDto.metadata;
     media.model_id = createMediaDto.model_id;
+    media.size = createMediaDto.size;
+    media.mime_type = createMediaDto.mime_type;
 
     let resource = new Resource();
     if (createMediaDto.resourceId != null)
@@ -35,12 +36,14 @@ export class MediaService {
 
     if (resource != null) media.resource = resource;
 
-    const myFile = fs.readFileSync(media.disk);
+    const myFile = fs.readFileSync("storage/uploads/" + media.disk);
 
-    const contentType = this.defineContentType(media.metadata);
+    const contentType = media.mime_type;
+    const mimeTypeSplited = media.mime_type.split("/", 2);
+    const typeFile = mimeTypeSplited[1];
 
     const uploadResult = await this.uploadS3Service.uploadFileToBucket(
-      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}.${media.metadata}`,
+      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}.${typeFile}`,
       myFile,
       process.env.AWS_BUCKET_NAME,
       contentType
@@ -135,16 +138,5 @@ export class MediaService {
       next_page,
       prev_page
     );
-  }
-
-  defineContentType(metadata: string): string {
-    switch (metadata) {
-      case "pdf":
-        return Metadata.pdf;
-      case "png":
-        return Metadata.png;
-      case "jpeg":
-        return Metadata.jpeg;
-    }
   }
 }
