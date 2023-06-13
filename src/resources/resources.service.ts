@@ -66,31 +66,33 @@ export class ResourcesService {
   ): Promise<BaseListiningRequestResult<Resource>> {
     const per_page = params.per_page || 10;
     const skip = params.per_page * (params.page - 1) || 0;
-    const query = this.resourceRepo.createQueryBuilder("resource");
+    const query = this.resourceRepo.createQueryBuilder("resources");
 
     if (params.filters != null) {
       if (params.filters.title != null)
-        query.where("resource.title like :title", {
+        query.where("resources.title like :title", {
           title: params.filters.title,
         });
 
       if (params.filters.description != null)
-        query.where("resource.description like :desc", {
+        query.where("resources.description like :desc", {
           desc: params.filters.description,
         });
 
       if (params.filters.subjectId != null)
         query
-          .leftJoin("resource.subject", "disc")
-          .where("disc.id = id", { id: params.filters.subjectId });
+          .leftJoin("resources.subject", "subject")
+          .where("subject.id = :id", {
+            id: params.filters.subjectId,
+          });
 
       if (params.filters.creatorId != null)
-        query.where("resource.creatorId = creatorId", {
+        query.where("resources.creatorId = :creatorId", {
           creatorId: params.filters.creatorId,
         });
     }
     const total = await query.getCount();
-    const num_pages = total / per_page;
+    const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
     const next_page = num_pages > params.page;
     const prev_page = params.page > 1;

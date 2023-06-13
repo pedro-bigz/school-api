@@ -18,10 +18,12 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags } from "@nestjs/swagger";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
 import { MediaService } from "./media.service";
 
+@ApiTags("Medias")
 @Controller("media")
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}

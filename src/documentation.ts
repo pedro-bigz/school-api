@@ -9,15 +9,9 @@ type Tag = {
 
 const app = {
   name: "School API",
-  description: "Listagem de Endpoints",
+  description: "Endpoints Documentation",
   version: "1.0",
-  // tags: [],
-  tags: [
-    { name: "users" },
-    { name: "resources" },
-    { name: "auth" },
-    { name: "media" },
-  ],
+  tags: [],
 };
 
 export class SwaggerDocumentationAdapter {

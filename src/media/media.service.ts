@@ -115,17 +115,19 @@ export class MediaService {
         query.leftJoin("media.resource", "res");
 
         if (params.filters.resourceId != null)
-          query.where("res.id = res_id", { res_id: params.filters.resourceId });
+          query.where("res.id = :res_id", {
+            res_id: params.filters.resourceId,
+          });
 
         if (params.filters.creatorId != null)
-          query.where("res.creatorId = creator_id", {
+          query.where("res.creatorId = :creator_id", {
             creator_id: params.filters.creatorId,
           });
       }
     }
 
     const total = await query.getCount();
-    const num_pages = total / per_page;
+    const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
     const next_page = num_pages > params.page;
     const prev_page = params.page > 1;

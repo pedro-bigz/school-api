@@ -1,23 +1,25 @@
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
+import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
   Query,
 } from "@nestjs/common";
-import { ResourcesService } from "./resources.service";
+import { ApiTags } from "@nestjs/swagger";
 import { CreateResourceDto } from "./dto/create-resource.dto";
-import { UpdateResourceDto } from "./dto/update-resource.dto";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
-import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
-import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { ResourceFilter } from "./dto/resource-filter.dto";
-import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { ResourcesService } from "./resources.service";
 
+@ApiTags("Resources")
 @Controller("resources")
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) {}

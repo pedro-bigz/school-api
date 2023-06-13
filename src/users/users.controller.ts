@@ -1,26 +1,28 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Request,
-  HttpStatus,
-  Query,
-} from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
-import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
+import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserFilter } from "./dto/user-filter.dto";
+import { UsersService } from "./users.service";
 
+@ApiTags("Users")
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

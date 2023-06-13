@@ -94,25 +94,25 @@ export class SubjectService {
     const query = this.subjectRepo.createQueryBuilder("subject");
 
     if (params.filters.name != null)
-      query.where("subject.name like: name", {
+      query.where("subject.name like :name", {
         name: params.filters.name,
       });
 
     if (params.filters.goal != null)
-      query.where("subject.goal like : goal", { goal: params.filters.goal });
+      query.where("subject.goal like :goal", { goal: params.filters.goal });
 
     if (params.filters.ch_total != null)
-      query.where("subject.ch_total = ch_total", {
+      query.where("subject.ch_total = :ch_total", {
         ch_total: params.filters.ch_total,
       });
 
     if (params.filters.period != null)
-      query.where("subject.period = period", {
+      query.where("subject.period = :period", {
         period: params.filters.period,
       });
 
     const total = await query.getCount();
-    const num_pages = total / per_page;
+    const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
     const next_page = num_pages > params.page;
     const prev_page = params.page > 1;
