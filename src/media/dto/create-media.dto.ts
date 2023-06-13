@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class CreateMediaDto {
   @ApiProperty()
   @IsString()
@@ -20,6 +20,16 @@ export class CreateMediaDto {
   @IsString()
   @IsNotEmpty()
   metadata: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  mime_type: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  size: number;
 
   @ApiProperty()
   @IsString()

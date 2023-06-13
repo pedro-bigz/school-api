@@ -1,7 +1,7 @@
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
-import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import {
   Body,
   Controller,
@@ -13,11 +13,13 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { CreateSubjectDto } from "./dto/create-subject.dto";
 import { SubjectFilter } from "./dto/subject-filter.dto";
 import { UpdateSubjectDto } from "./dto/update-subject.dto";
 import { SubjectService } from "./subject.service";
 
+@ApiTags("Subjects")
 @Controller("subject")
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}

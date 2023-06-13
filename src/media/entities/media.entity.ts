@@ -1,12 +1,12 @@
 import { Resource } from "@app/resources/entities/resource.entity";
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
   ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 @Entity({ name: "media" })
@@ -15,22 +15,28 @@ export class Media {
   id: number;
 
   @Column({ length: 256 })
-  model_type: string;
+  model_type: string; //model_resource or model_user
 
   @Column()
-  model_id: number;
+  model_id: number; //resource_id or user_id
 
   @Column({ length: 100 })
-  collection_name: string;
+  collection_name: string; //pdf, images, texto, etc...
 
-  @Column({ length: 256 })
+  @Column({ length: 256 }) //json properties
   metadata: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256 }) //name of file
   filename: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256 }) // image/png example
+  mime_type: string;
+
+  @Column({ length: 256 }) // url from bucket
   disk: string; //could be link or path
+
+  @Column()
+  size: number; //length of file
 
   @CreateDateColumn({ type: "timestamp", nullable: true })
   createdAt: Date;

@@ -1,14 +1,14 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { hash } from "bcrypt";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
-import { UserRepository } from "./users.repository";
-import { RoleHasPermissionsService } from "@app/role_has_permissions/role_has_permissions.service";
-import { hash } from "bcrypt";
-import { Sex } from "./enums/sex_enum";
-import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { UserFilter } from "./dto/user-filter.dto";
-import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
+import { User } from "./entities/user.entity";
+import { Sex } from "./enums/sex_enum";
+import { UserRepository } from "./users.repository";
 
 @Injectable()
 export class UsersService {
@@ -50,14 +50,30 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<any> | undefined {
-    const email = createUserDto.email;
+    const query = this.userRepo.createQueryBuilder("user");
 
-    const user = await this.userRepo.findOne({
-      where: { email },
-    });
+    const user = await query
+      .where("user.email like :email", {
+        email: createUserDto.email,
+      })
+      .orWhere("user.register_number like :register_number", {
+        register_number: createUserDto.ufuRegister,
+      })
+      .getOne();
 
-    if (user != null)
-      throw new HttpException(`User with email ${email} already exists`, 400);
+    if (user != null) {
+      if (user.email === createUserDto.email)
+        throw new HttpException(
+          `User with email ${createUserDto.email} already exists`,
+          HttpStatus.BAD_REQUEST
+        );
+
+      if (user.register_number === createUserDto.ufuRegister)
+        throw new HttpException(
+          `User with register ${createUserDto.ufuRegister} already exists`,
+          HttpStatus.BAD_REQUEST
+        );
+    }
 
     const newUser = new User();
 
@@ -149,10 +165,10 @@ export class UsersService {
       });
 
     if (params.filters.sex != null)
-      query.where("user.sex = sex", { sex: Sex[params.filters.sex] });
+      query.where("user.sex = :sex", { sex: Sex[params.filters.sex] });
 
     const total = await query.getCount();
-    const num_pages = total / per_page;
+    const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
     const next_page = num_pages > params.page;
     const prev_page = params.page > 1;

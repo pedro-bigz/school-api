@@ -1,8 +1,8 @@
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
-import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
+import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { File } from "@app/utils/file";
 import {
   Body,
@@ -18,10 +18,12 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags } from "@nestjs/swagger";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
 import { MediaService } from "./media.service";
 
+@ApiTags("Medias")
 @Controller("media")
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}

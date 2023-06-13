@@ -44,12 +44,14 @@ export class ResourcesService {
     this.resourceRepo.create(newResource);
     const resource = await this.resourceRepo.save(newResource);
 
-    if (createResourceDto.media != null) {
-      createResourceDto.media.resourceId = resource.id;
+    if (createResourceDto.media != null && createResourceDto.media.length > 0) {
+      createResourceDto.media.forEach(async (media) => {
+        media.resourceId = resource.id;
 
-      const media = await this.mediaService.create(createResourceDto.media);
+        const res = await this.mediaService.create(media);
 
-      if (media == null) throw new HttpException("Fail at media creation", 500);
+        if (res == null) throw new HttpException("Fail at media creation", 500);
+      });
     }
 
     return newResource;
@@ -64,31 +66,33 @@ export class ResourcesService {
   ): Promise<BaseListiningRequestResult<Resource>> {
     const per_page = params.per_page || 10;
     const skip = params.per_page * (params.page - 1) || 0;
-    const query = this.resourceRepo.createQueryBuilder("resource");
+    const query = this.resourceRepo.createQueryBuilder("resources");
 
     if (params.filters != null) {
       if (params.filters.title != null)
-        query.where("resource.title like :title", {
+        query.where("resources.title like :title", {
           title: params.filters.title,
         });
 
       if (params.filters.description != null)
-        query.where("resource.description like :desc", {
+        query.where("resources.description like :desc", {
           desc: params.filters.description,
         });
 
       if (params.filters.subjectId != null)
         query
-          .leftJoin("resource.subject", "disc")
-          .where("disc.id = id", { id: params.filters.subjectId });
+          .leftJoin("resources.subject", "subject")
+          .where("subject.id = :id", {
+            id: params.filters.subjectId,
+          });
 
       if (params.filters.creatorId != null)
-        query.where("resource.creatorId = creatorId", {
+        query.where("resources.creatorId = :creatorId", {
           creatorId: params.filters.creatorId,
         });
     }
     const total = await query.getCount();
-    const num_pages = total / per_page;
+    const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
     const next_page = num_pages > params.page;
     const prev_page = params.page > 1;
