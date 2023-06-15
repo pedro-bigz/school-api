@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProfessorDto } from './dto/create-professor.dto';
-import { ProfessorsService } from './professor.service';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
+import { ProfessorsService } from './professor.service';
 
 @ApiTags('Professores')
 @Controller('professors')
@@ -35,14 +35,15 @@ export class ProfessorController {
   }
 
   @Get()
-  async findAll() {
+  async list() {
     try {
-      const result = await this.professorService.findAll();
+      const result = await this.professorService.list();
       const response = new BaseRequestResult(
         HttpStatus.OK,
         BaseRequestMessages.Found,
         result
       );
+      return response;
     } catch (e) {
       return e;
     }
