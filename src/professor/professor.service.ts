@@ -22,6 +22,7 @@ export class ProfessorsService {
     const newProfessor = new Professor();
     
     newProfessor.name = createProfessorDto.name;
+	newProfessor.sex = createProfessorDto.sex;
     newProfessor.email = createProfessorDto.email;
     newProfessor.photoPath = createProfessorDto.photoPath;
     newProfessor.description = createProfessorDto.description;
@@ -50,6 +51,7 @@ export class ProfessorsService {
       if (professor == null) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
       
       professor.name = UpdateProfessorDto.name;
+	  professor.sex = updateProfessorDto.sex;
       professor.description = updateProfessorDto.description;
       professor.facomPageUrl = updateProfessorDto.facomPageUrl;
       professor.photoPath = updateProfessorDto.photoPath;

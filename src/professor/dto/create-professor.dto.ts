@@ -7,6 +7,11 @@ export class CreateProfessorDto {
     @IsString()
     name: string;
 
+	@ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    sex: string;
+
     @ApiProperty()
     @IsNotEmpty()
     @IsEmail()
