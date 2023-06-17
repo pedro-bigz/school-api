@@ -1,9 +1,17 @@
+import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { BaseListiningRequestResult } from "@app/common/BaseModels/base-listining-request-result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import { MediaService } from "@app/media/media.service";
 import { SubjectService } from "@app/subject/subject.service";
 import { UsersService } from "@app/users/users.service";
-import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from "@nestjs/common";
+import { AddNewMediasToResourceDto } from "./dto/add-medias.dto";
 import { CreateResourceDto } from "./dto/create-resource.dto";
 import { ResourceFilter } from "./dto/resource-filter.dto";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
@@ -50,7 +58,11 @@ export class ResourcesService {
 
         const res = await this.mediaService.create(media);
 
-        if (res == null) throw new HttpException("Fail at media creation", 500);
+        if (res == null)
+          throw new HttpException(
+            "Fail at media creation",
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
       });
     }
 
@@ -112,7 +124,8 @@ export class ResourcesService {
       where: { id },
       relations: ["subject", "media"],
     });
-    if (resource == null) throw new HttpException("Resource not found", 404);
+    if (resource == null)
+      throw new HttpException("Resource not found", HttpStatus.NOT_FOUND);
 
     return resource;
   }
@@ -141,7 +154,8 @@ export class ResourcesService {
       relations: ["media"],
     });
 
-    if (resource == null) throw new HttpException("Resource not found", 404);
+    if (resource == null)
+      throw new HttpException("Resource not found", HttpStatus.NOT_FOUND);
 
     resource.deletedAt = new Date();
 
@@ -154,5 +168,33 @@ export class ResourcesService {
     this.resourceRepo.save(resource);
 
     return "Success";
+  }
+
+  async addNewMedias(
+    id: number,
+    data: AddNewMediasToResourceDto
+  ): Promise<BaseRequestMessages> {
+    const resource = await this.resourceRepo.findOne({
+      where: { id },
+    });
+
+    if (resource == null)
+      throw new HttpException("Resource not found", HttpStatus.NOT_FOUND);
+
+    if (data.media != null && data.media.length > 0) {
+      data.media.forEach(async (media) => {
+        media.resourceId = resource.id;
+
+        const res = await this.mediaService.create(media);
+
+        if (res == null)
+          throw new HttpException(
+            "Fail at media creation",
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+      });
+    }
+
+    return BaseRequestMessages.Success;
   }
 }
