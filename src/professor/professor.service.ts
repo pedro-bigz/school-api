@@ -33,17 +33,8 @@ export class ProfessorsService {
     return newProfessor;
   }
 
-  async findAll(): Promise<Professor[]> {
-    const professors  = await this.professorRepo.find({
-        select: {
-          name: true,
-          email:true,
-          photoPath: true,
-          description: true,
-          facomPageUrl:true
-        },
-    });
-    return professors;
+  async list(): Promise<Professor[]> {
+    return this.professorRepo.find();
   }
 
   async update(
