@@ -1,6 +1,5 @@
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
-import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import {
@@ -8,6 +7,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Patch,
@@ -27,18 +27,15 @@ import { UsersService } from "./users.service";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post("register")
   async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const result = await this.usersService.create(createUserDto);
-      return new BaseRequestResult(
-        HttpStatus.CREATED,
-        BaseRequestMessages.Created,
-        result
-      );
-    } catch (e) {
-      return e;
-    }
+    const result = await this.usersService.create(createUserDto);
+    return new BaseRequestResult(
+      HttpStatus.CREATED,
+      BaseRequestMessages.Created,
+      result
+    );
   }
 
   @UseGuards(JwtAuthGuard)

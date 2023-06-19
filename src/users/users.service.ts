@@ -52,6 +52,18 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<any> | undefined {
     const query = this.userRepo.createQueryBuilder("user");
 
+    if (createUserDto.email == null)
+      throw new HttpException(`Email can't be empty`, HttpStatus.BAD_REQUEST);
+
+    if (createUserDto.sex == null)
+      throw new HttpException(`Sex can't be empty`, HttpStatus.BAD_REQUEST);
+
+    if (createUserDto.password == null)
+      throw new HttpException(
+        `Password can't be empty`,
+        HttpStatus.BAD_REQUEST
+      );
+
     const user = await query
       .where("user.email like :email", {
         email: createUserDto.email,
