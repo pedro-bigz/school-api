@@ -2,6 +2,12 @@ import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-reque
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
+import { ApiTags } from "@nestjs/swagger";
+import { CreateResourceDto } from "./dto/create-resource.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { ResourcesService } from "./resources.service";
+import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import {
   Body,
   Controller,
@@ -12,18 +18,16 @@ import {
   Patch,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { CreateResourceDto } from "./dto/create-resource.dto";
-import { ResourceFilter } from "./dto/resource-filter.dto";
-import { UpdateResourceDto } from "./dto/update-resource.dto";
-import { ResourcesService } from "./resources.service";
 
 @ApiTags("Resources")
 @Controller("resources")
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async list() {
     try {
@@ -38,17 +42,20 @@ export class ResourcesController {
     }
   }
 
-  @Post("/paginated")
+  @UseGuards(JwtAuthGuard)
+  @Get("/paginated")
   async listPaginated(
     @Query("order") order: Order,
     @Query("page") page: number,
     @Query("take") take: number,
-    @Body() filter: ResourceFilter
+    @Body() filters: ResourceFilter
   ) {
     try {
+      console.log({ order, page, take, filters });
       const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
-        new BaseListiningRequest<ResourceFilter>(order, page, take, filter);
+        new BaseListiningRequest<ResourceFilter>(order, page, take, filters);
 
+      console.log(parametersOfSearch);
       const result = await this.resourcesService.findAllPaginated(
         parametersOfSearch
       );
@@ -62,6 +69,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   async findOne(@Param("id") id: string) {
     try {
@@ -76,9 +84,11 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createResourceDto: CreateResourceDto) {
+  async create(@Request() req, @Body() createResourceDto: CreateResourceDto) {
     try {
+      createResourceDto.creatorId = req.user.id;
       const result = await this.resourcesService.create(createResourceDto);
       return new BaseRequestResult(
         HttpStatus.CREATED,
@@ -90,6 +100,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async update(
     @Param("id") id: string,
@@ -107,6 +118,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async remove(@Param("id") id: string) {
     try {

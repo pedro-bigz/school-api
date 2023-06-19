@@ -21,7 +21,7 @@ export class Resource {
   @Column({ length: 255 })
   title: string;
 
-  @Column({ default: "" })
+  @Column({ default: "", length: 1024 })
   description: string;
 
   @Column({ default: false })

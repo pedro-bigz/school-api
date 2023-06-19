@@ -9,6 +9,8 @@ import { ResourceFilter } from "./dto/resource-filter.dto";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
 import { Resource } from "./entities/resource.entity";
 import { ResourceRepository } from "./resources.repository";
+import { CreateMediaDto } from "@app/media/dto/create-media.dto";
+// import { User } from "@app/users/entities/user.entity";
 @Injectable()
 export class ResourcesService {
   constructor(
@@ -24,9 +26,7 @@ export class ResourcesService {
   }
   async create(createResourceDto: CreateResourceDto): Promise<Resource> {
     const newResource = new Resource();
-
-    const subjectId = createResourceDto.subjectId;
-    const creatorId = createResourceDto.creatorId;
+    const { subjectId, creatorId, medias } = createResourceDto;
 
     newResource.title = createResourceDto.title;
     newResource.description = createResourceDto.description;
@@ -35,7 +35,6 @@ export class ResourcesService {
     newResource.createdAt = new Date();
 
     const subject = await this.subjectService.findOne(subjectId);
-
     const creator = await this.userService.findById(creatorId);
 
     newResource.creator = creator;
@@ -44,13 +43,26 @@ export class ResourcesService {
     this.resourceRepo.create(newResource);
     const resource = await this.resourceRepo.save(newResource);
 
-    if (createResourceDto.media != null && createResourceDto.media.length > 0) {
-      createResourceDto.media.forEach(async (media) => {
-        media.resourceId = resource.id;
+    if (medias != null && medias.length > 0) {
+      medias.forEach(async (media) => {
+        const mediaDto = new CreateMediaDto();
 
-        const res = await this.mediaService.create(media);
+        mediaDto.model_type = "Resource";
+        mediaDto.model_id = resource.id;
+        mediaDto.resourceId = resource.id;
+        mediaDto.metadata = JSON.stringify(media.metadata);
+        mediaDto.collection_name = media.collection_name;
+        mediaDto.mime_type = media.mime_type;
+        mediaDto.filename = media.filename;
+        mediaDto.size = media.metadata.size;
+        mediaDto.disk = "s3";
 
-        if (res == null) throw new HttpException("Fail at media creation", 500);
+        this.mediaService.create(mediaDto).then((storedMedia) => {
+          console.log(storedMedia);
+          if (!storedMedia) {
+            throw new HttpException("Fail at media creation", 500);
+          }
+        });
       });
     }
 
@@ -81,7 +93,7 @@ export class ResourcesService {
 
       if (params.filters.subjectId != null)
         query
-          .leftJoin("resources.subject", "subject")
+          .innerJoin("resources.subject", "subject")
           .where("subject.id = :id", {
             id: params.filters.subjectId,
           });

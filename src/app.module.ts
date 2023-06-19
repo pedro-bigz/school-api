@@ -16,7 +16,7 @@ import { ModelHasRole } from "./model_has_roles/entities/model_has_role.entity";
 import { Permission } from "./permissions/entities/permission.entity";
 import { PermissionsModule } from "./permissions/permissions.module";
 import { Professor } from "./professor/entities/professor.entity";
-import { ProfessorModule } from './professor/professor.module';
+import { ProfessorModule } from "./professor/professor.module";
 import { Resource } from "./resources/entities/resource.entity";
 import { RoleHasPermission } from "./role_has_permissions/entities/role_has_permission.entity";
 import { RoleHasPermissionsModule } from "./role_has_permissions/role_has_permissions.module";

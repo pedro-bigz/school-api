@@ -9,7 +9,7 @@ import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
 import { Media } from "./entities/media.entity";
 import { MediaRepository } from "./media.repository";
-import { S3 } from "aws-sdk";
+import { MediaResolverService } from "./media-resolver.service";
 
 @Injectable()
 export class MediaService {
@@ -17,48 +17,47 @@ export class MediaService {
     @Inject(forwardRef(() => ResourcesService))
     private readonly resourcesService: ResourcesService,
     private readonly mediaRepository: MediaRepository,
-    private readonly uploadS3Service: UploadS3Service
+    private readonly uploadS3Service: UploadS3Service,
+    private readonly mediaResolverService: MediaResolverService
   ) {}
 
   async create(createMediaDto: CreateMediaDto): Promise<Media> {
     const media = new Media();
-
     media.collection_name = createMediaDto.collection_name;
     media.filename = createMediaDto.filename;
     media.disk = createMediaDto.disk;
     media.metadata = createMediaDto.metadata;
     media.size = createMediaDto.size;
     media.mime_type = createMediaDto.mime_type;
-    media.model_type = createMediaDto.model_type;
-    media.model_id = createMediaDto.model_id;
+
+    const { model_type, model_id } = createMediaDto;
 
     let resource = new Resource();
-    if (createMediaDto.resourceId != null)
-      resource = await this.resourcesService.findOne(createMediaDto.resourceId);
+    if (createMediaDto.model_id != null)
+      resource = await this.resourcesService.findOne(model_type, model_id);
 
     if (resource != null) media.resource = resource;
 
-    // const uploadResult = await this.uploadMediaToS3(media);
+    const myFile = fs.readFileSync("storage/uploads/" + media.filename);
 
-    // console.log(uploadResult.Location);
-    // media.disk = uploadResult.Location;
+    const contentType = media.mime_type;
+    const mimeTypeSplited = media.mime_type.split("/", 2);
+    const typeFile = mimeTypeSplited[1];
+
+    const uploadResult = await this.uploadS3Service.uploadFileToBucket(
+      `${media.collection_name}/resources/${media.resourceId}/${media.filename}.${typeFile}`,
+      myFile,
+      process.env.AWS_BUCKET_NAME,
+      contentType
+    );
+
+    media.disk = uploadResult.Location;
 
     this.mediaRepository.create(media);
+
     this.mediaRepository.save(media);
 
     return media;
-  }
-
-  uploadMediaToS3(media: Media): Promise<S3.ManagedUpload.SendData> {
-    const uploadedFile = fs.readFileSync("storage/uploads/" + media.filename);
-    const contentMimeType = media.mime_type;
-    // const contentType = media.mime_type.replace(/.*\//, '');
-    return this.uploadS3Service.uploadFileToBucket(
-      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`,
-      uploadedFile,
-      process.env.AWS_BUCKET_NAME,
-      contentMimeType
-    );
   }
 
   async findAll(): Promise<Media[]> {
