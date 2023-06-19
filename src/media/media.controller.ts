@@ -104,14 +104,21 @@ export class MediaController {
 
   @Post("/paginated")
   async listPaginated(
-    @Query("order") order: Order,
+    @Query("orderBy") orderBy: string,
+    @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
     @Body() filter: MediaFilter
   ) {
     try {
       const parametersOfSearch: BaseListiningRequest<MediaFilter> =
-        new BaseListiningRequest<MediaFilter>(order, page, take, filter);
+        new BaseListiningRequest<MediaFilter>(
+          orderBy,
+          orderDirection,
+          page,
+          take,
+          filter
+        );
 
       const result = await this.mediaService.findAllPaginated(
         parametersOfSearch

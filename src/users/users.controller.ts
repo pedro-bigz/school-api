@@ -41,6 +41,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async list() {
     try {
@@ -62,6 +63,8 @@ export class UsersController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   async find(@Param("id") id: string) {
     try {
@@ -76,6 +79,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     try {
@@ -90,6 +94,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async remove(@Param("id") id: string) {
     try {
@@ -100,16 +105,24 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post("/paginated")
   async listPaginated(
-    @Query("order") order: Order,
+    @Query("orderBy") orderBy: string,
+    @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
     @Body() filter: UserFilter
   ) {
     try {
       const parametersOfSearch: BaseListiningRequest<UserFilter> =
-        new BaseListiningRequest<UserFilter>(order, page, take, filter);
+        new BaseListiningRequest<UserFilter>(
+          orderBy,
+          orderDirection,
+          page,
+          take,
+          filter
+        );
 
       const result = await this.usersService.findAllPaginated(
         parametersOfSearch

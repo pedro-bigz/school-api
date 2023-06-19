@@ -4,6 +4,7 @@ import { Resource } from "@app/resources/entities/resource.entity";
 import { ResourcesService } from "@app/resources/resources.service";
 import { UploadS3Service } from "@app/s3/s3Bucket.service";
 import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import { S3 } from "aws-sdk";
 import * as fs from "fs";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
@@ -21,14 +22,15 @@ export class MediaService {
 
   async create(createMediaDto: CreateMediaDto): Promise<Media> {
     const media = new Media();
+
     media.collection_name = createMediaDto.collection_name;
     media.filename = createMediaDto.filename;
     media.disk = createMediaDto.disk;
-    media.model_type = createMediaDto.model_type;
     media.metadata = createMediaDto.metadata;
-    media.model_id = createMediaDto.model_id;
     media.size = createMediaDto.size;
     media.mime_type = createMediaDto.mime_type;
+    media.model_type = createMediaDto.model_type;
+    media.model_id = createMediaDto.model_id;
 
     let resource = new Resource();
     if (createMediaDto.resourceId != null)
@@ -36,26 +38,38 @@ export class MediaService {
 
     if (resource != null) media.resource = resource;
 
-    const myFile = fs.readFileSync("storage/uploads/" + media.disk);
+    const uploadResult = await this.uploadMediaToS3(media);
 
-    const contentType = media.mime_type;
-    const mimeTypeSplited = media.mime_type.split("/", 2);
-    const typeFile = mimeTypeSplited[1];
-
-    const uploadResult = await this.uploadS3Service.uploadFileToBucket(
-      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}.${typeFile}`,
-      myFile,
-      process.env.AWS_BUCKET_NAME,
-      contentType
-    );
-
-    media.disk = uploadResult.Location;
+    console.log(uploadResult.Location);
+    // media.disk = uploadResult.Location;
 
     this.mediaRepository.create(media);
-
     this.mediaRepository.save(media);
 
     return media;
+  }
+
+  getS3Url() {
+    return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com`;
+  }
+
+  gets3MediaPath(media: Media) {
+    return `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`;
+  }
+
+  gets3MediaUrl(media: Media) {
+    return `${this.getS3Url()}/${this.gets3MediaPath(media)}`;
+  }
+
+  uploadMediaToS3(media: Media): Promise<S3.ManagedUpload.SendData> {
+    const uploadedFile = fs.readFileSync("storage/uploads/" + media.filename);
+    const contentMimeType = media.mime_type;
+    return this.uploadS3Service.uploadFileToBucket(
+      `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`,
+      uploadedFile,
+      process.env.AWS_BUCKET_NAME,
+      contentMimeType
+    );
   }
 
   async findAll(): Promise<Media[]> {
@@ -125,6 +139,9 @@ export class MediaService {
           });
       }
     }
+
+    if (params.orderBy != null)
+      query.orderBy(params.orderBy, params.orderDirection);
 
     const total = await query.getCount();
     const num_pages = Math.ceil(total / per_page);

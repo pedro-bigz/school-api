@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
@@ -12,6 +13,8 @@ import {
   Patch,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AddNewMediasToResourceDto } from "./dto/add-medias.dto";
@@ -25,6 +28,7 @@ import { ResourcesService } from "./resources.service";
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async list() {
     try {
@@ -39,16 +43,24 @@ export class ResourcesController {
     }
   }
 
-  @Post("/paginated")
+  @UseGuards(JwtAuthGuard)
+  @Get("/paginated")
   async listPaginated(
-    @Query("order") order: Order,
+    @Query("orderBy") orderBy: string,
+    @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
-    @Body() filter: ResourceFilter
+    @Body() filters: ResourceFilter
   ) {
     try {
       const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
-        new BaseListiningRequest<ResourceFilter>(order, page, take, filter);
+        new BaseListiningRequest<ResourceFilter>(
+          orderBy,
+          orderDirection,
+          page,
+          take,
+          filters
+        );
 
       const result = await this.resourcesService.findAllPaginated(
         parametersOfSearch
@@ -63,6 +75,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   async findOne(@Param("id") id: string) {
     try {
@@ -77,9 +90,11 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createResourceDto: CreateResourceDto) {
+  async create(@Request() req, @Body() createResourceDto: CreateResourceDto) {
     try {
+      createResourceDto.creatorId = req.user.id;
       const result = await this.resourcesService.create(createResourceDto);
       return new BaseRequestResult(
         HttpStatus.CREATED,
@@ -91,6 +106,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async update(
     @Param("id") id: string,
@@ -108,6 +124,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch("add-medias/:id")
   async addNewMedias(
     @Param("id") id: string,
@@ -121,6 +138,7 @@ export class ResourcesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async remove(@Param("id") id: string) {
     try {

@@ -29,7 +29,7 @@ export class UploadS3Service {
       })
       .promise();
 
-    console.log(result);
+    // console.log(result);
 
     return result;
   }
@@ -48,8 +48,8 @@ export class UploadS3Service {
       },
     });
 
-    console.log(s3.config.credentials.accessKeyId);
-    console.log(s3.config.credentials.secretAccessKey);
+    // console.log(s3.config.credentials.accessKeyId);
+    // console.log(s3.config.credentials.secretAccessKey);
 
     const result = await s3
       .deleteObject({
@@ -58,7 +58,7 @@ export class UploadS3Service {
       })
       .promise();
 
-    console.log(result);
+    // console.log(result);
 
     return result;
   }
