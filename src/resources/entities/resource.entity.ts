@@ -30,6 +30,9 @@ export class Resource {
   @RelationId((resource: Resource) => resource.creator)
   creatorId: number;
 
+  @RelationId((resource: Resource) => resource.subject)
+  subjectId: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
