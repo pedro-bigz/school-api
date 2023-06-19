@@ -3,11 +3,6 @@ import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-reque
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
-import { ApiTags } from "@nestjs/swagger";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { UserFilter } from "./dto/user-filter.dto";
-import { UsersService } from "./users.service";
 import {
   Body,
   Controller,
@@ -21,13 +16,17 @@ import {
   Request,
   UseGuards,
 } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserFilter } from "./dto/user-filter.dto";
+import { UsersService } from "./users.service";
 
 @ApiTags("Users")
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post("register")
   async create(@Body() createUserDto: CreateUserDto) {
     try {

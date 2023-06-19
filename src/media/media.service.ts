@@ -4,12 +4,12 @@ import { Resource } from "@app/resources/entities/resource.entity";
 import { ResourcesService } from "@app/resources/resources.service";
 import { UploadS3Service } from "@app/s3/s3Bucket.service";
 import { HttpException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import { S3 } from "aws-sdk";
 import * as fs from "fs";
 import { CreateMediaDto } from "./dto/create-media.dto";
 import { MediaFilter } from "./dto/media-filter.dto";
 import { Media } from "./entities/media.entity";
 import { MediaRepository } from "./media.repository";
-import { S3 } from "aws-sdk";
 
 @Injectable()
 export class MediaService {
@@ -38,10 +38,10 @@ export class MediaService {
 
     if (resource != null) media.resource = resource;
 
-    // const uploadResult = await this.uploadMediaToS3(media);
+    const uploadResult = await this.uploadMediaToS3(media);
 
-    // console.log(uploadResult.Location);
-    // media.disk = uploadResult.Location;
+    console.log(uploadResult.Location);
+    media.disk = uploadResult.Location;
 
     this.mediaRepository.create(media);
     this.mediaRepository.save(media);
