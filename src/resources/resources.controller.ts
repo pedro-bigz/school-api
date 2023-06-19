@@ -45,15 +45,22 @@ export class ResourcesController {
   @UseGuards(JwtAuthGuard)
   @Get("/paginated")
   async listPaginated(
-    @Query("order") order: Order,
+    @Query("orderBy") orderBy: string,
+    @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
     @Body() filters: ResourceFilter
   ) {
     try {
-      console.log({ order, page, take, filters });
+      console.log({ orderBy, orderDirection, page, take, filters });
       const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
-        new BaseListiningRequest<ResourceFilter>(order, page, take, filters);
+        new BaseListiningRequest<ResourceFilter>(
+          orderBy,
+          orderDirection,
+          page,
+          take,
+          filters
+        );
 
       console.log(parametersOfSearch);
       const result = await this.resourcesService.findAllPaginated(

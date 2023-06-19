@@ -1,25 +1,31 @@
-import { Order } from "./BaseEnums/order.enum";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsArray, IsEnum, IsInt, IsOptional, Max, Min } from "class-validator";
+import { IsArray, IsEnum, IsInt, IsOptional, IsString, Max, Min } from "class-validator";
 import { Type } from "class-transformer";
 
 export class BaseListiningRequest<T> {
   constructor(
-    order: Order,
+    orderBy: string,
+    orderDirection: "ASC" | "DESC",
     page: number = null,
     per_page: number = null,
     filters: T
   ) {
-    (this.order = order),
+    (this.orderBy = orderBy),
+      (this.orderDirection = orderDirection),
       (this.page = page),
       (this.per_page = per_page),
       (this.filters = filters);
   }
 
-  @ApiPropertyOptional({ enum: Order, default: Order.ASC })
-  @IsEnum(Order)
+  @ApiPropertyOptional()
+  @IsString()
   @IsOptional()
-  order?: Order = Order.ASC;
+  orderBy?: string = 'id';
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  orderDirection?: "ASC" | "DESC" = 'ASC';
 
   @ApiPropertyOptional({
     minimum: 1,

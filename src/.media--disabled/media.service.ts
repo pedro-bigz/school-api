@@ -127,6 +127,9 @@ export class MediaService {
           });
       }
     }
+    
+    if (params.orderBy != null)
+      query.orderBy(params.orderBy, params.orderDirection);
 
     const total = await query.getCount();
     const num_pages = Math.ceil(total / per_page);

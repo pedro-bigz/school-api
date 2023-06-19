@@ -95,14 +95,21 @@ export class SubjectController {
 
   @Post("paginated")
   async listPaginated(
-    @Query("order") order: Order,
+    @Query("orderBy") orderBy: string,
+    @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
     @Body() filter: SubjectFilter
   ) {
     try {
       const parametersOfSearch: BaseListiningRequest<SubjectFilter> =
-        new BaseListiningRequest<SubjectFilter>(order, page, take, filter);
+        new BaseListiningRequest<SubjectFilter>(
+          orderBy,
+          orderDirection,
+          page,
+          take,
+          filter
+        );
 
       const result = await this.subjectService.findAllPaginated(
         parametersOfSearch

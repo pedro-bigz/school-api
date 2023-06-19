@@ -111,6 +111,9 @@ export class SubjectService {
         period: params.filters.period,
       });
 
+    if (params.orderBy != null)
+      query.orderBy(params.orderBy, params.orderDirection);
+
     const total = await query.getCount();
     const num_pages = Math.ceil(total / per_page);
     const data = await query.skip(skip).take(per_page).getMany();
