@@ -1,6 +1,5 @@
 import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
-import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
 import {
@@ -50,7 +49,7 @@ export class ResourcesController {
     @Query("orderDirection") orderDirection: "ASC" | "DESC",
     @Query("page") page: number,
     @Query("take") take: number,
-    @Body() filters: ResourceFilter
+    @Query() filters: ResourceFilter
   ) {
     try {
       const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
