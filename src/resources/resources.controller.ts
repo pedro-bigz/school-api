@@ -1,13 +1,8 @@
+import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import { BaseRequestMessages } from "@app/common/BaseModels/BaseEnums/base-request-messages.enum";
 import { Order } from "@app/common/BaseModels/BaseEnums/order.enum";
 import { BaseRequestResult } from "@app/common/BaseModels/base-Request-Result.dto";
 import { BaseListiningRequest } from "@app/common/BaseModels/base-listining-request.dto";
-import { ApiTags } from "@nestjs/swagger";
-import { CreateResourceDto } from "./dto/create-resource.dto";
-import { ResourceFilter } from "./dto/resource-filter.dto";
-import { UpdateResourceDto } from "./dto/update-resource.dto";
-import { ResourcesService } from "./resources.service";
-import { JwtAuthGuard } from "@app/auth/jwt-auth.guard";
 import {
   Body,
   Controller,
@@ -21,6 +16,11 @@ import {
   Request,
   UseGuards,
 } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { CreateResourceDto } from "./dto/create-resource.dto";
+import { ResourceFilter } from "./dto/resource-filter.dto";
+import { UpdateResourceDto } from "./dto/update-resource.dto";
+import { ResourcesService } from "./resources.service";
 
 @ApiTags("Resources")
 @Controller("resources")
