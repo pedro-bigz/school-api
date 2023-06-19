@@ -38,6 +38,7 @@ export class ProfessorsService {
   async findAll(): Promise<Professor[]> {
     const professors  = await this.professorRepo.find({
         select: {
+		  id:true,
           name: true,
 		  sex: true,
           email:true,

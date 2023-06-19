@@ -17,7 +17,7 @@ export class Professor {
     @Column({ length: 100 })
     photoPath: string;
 
-    @Column({ length: 255 })
+    @Column({ length: 1000 })
     description: string;
 
     @Column({ length: 100 })
