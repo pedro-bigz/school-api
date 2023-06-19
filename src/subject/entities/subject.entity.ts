@@ -17,7 +17,8 @@ export class Subject {
   @Column({ length: 100 })
   name: string;
 
-  @Column({ length: 256 })
+  
+  @Column({ length: 800 })
   goal: string;
 
   @Column({ length: 256 })

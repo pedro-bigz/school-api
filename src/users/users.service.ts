@@ -59,7 +59,10 @@ export class UsersService {
       .orWhere("user.register_number like :register_number", {
         register_number: createUserDto.ufuRegister,
       })
+      .withDeleted()
       .getOne();
+
+    console.log(user);
 
     if (user != null) {
       if (user.email === createUserDto.email)

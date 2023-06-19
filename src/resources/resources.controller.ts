@@ -17,6 +17,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { AddNewMediasToResourceDto } from "./dto/add-medias.dto";
 import { CreateResourceDto } from "./dto/create-resource.dto";
 import { ResourceFilter } from "./dto/resource-filter.dto";
 import { UpdateResourceDto } from "./dto/update-resource.dto";
@@ -118,6 +119,20 @@ export class ResourcesController {
         BaseRequestMessages.Updated,
         result
       );
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch("add-medias/:id")
+  async addNewMedias(
+    @Param("id") id: string,
+    @Body() newMedias: AddNewMediasToResourceDto
+  ) {
+    try {
+      const result = await this.resourcesService.addNewMedias(+id, newMedias);
+      return new BaseRequestResult(HttpStatus.OK, result.toString(), null);
     } catch (e) {
       return e;
     }
