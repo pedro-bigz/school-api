@@ -8,6 +8,9 @@ export class Professor {
     @Column({ length: 100 })
     name: string;
 
+	@Column({ length: 15 })
+	sex: string;
+
     @Column({length:100, unique: true})
     email: string;
 

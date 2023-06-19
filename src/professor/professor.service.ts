@@ -3,6 +3,7 @@ import { CreateProfessorDto } from './dto/create-professor.dto';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
 import { Professor } from './entities/professor.entity';
 import { ProfessorRepository } from './professor.repository';
+import { Sex } from "./enums/sex_enum";
 
 @Injectable()
 export class ProfessorsService {
@@ -22,6 +23,7 @@ export class ProfessorsService {
     const newProfessor = new Professor();
     
     newProfessor.name = createProfessorDto.name;
+	newProfessor.sex = Sex[createProfessorDto.sex];
     newProfessor.email = createProfessorDto.email;
     newProfessor.photoPath = createProfessorDto.photoPath;
     newProfessor.description = createProfessorDto.description;
@@ -37,6 +39,7 @@ export class ProfessorsService {
     const professors  = await this.professorRepo.find({
         select: {
           name: true,
+		  sex: true,
           email:true,
           photoPath: true,
           description: true,
@@ -59,6 +62,7 @@ export class ProfessorsService {
       if (professor == null) throw new HttpException("User not found", HttpStatus.NOT_FOUND);
       
       professor.name = UpdateProfessorDto.name;
+	  professor.sex = Sex[updateProfessorDto.sex];
       professor.description = updateProfessorDto.description;
       professor.facomPageUrl = updateProfessorDto.facomPageUrl;
       professor.photoPath = updateProfessorDto.photoPath;

@@ -43,6 +43,7 @@ export class ProfessorController {
         BaseRequestMessages.Found,
         result
       );
+	  return response;
     } catch (e) {
       return e;
     }

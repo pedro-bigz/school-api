@@ -1,11 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsEmail} from "class-validator";
+import { IsString, IsNotEmpty, IsEmail, IsEnum} from "class-validator";
+import { Sex } from "../enums/sex_enum";
 
 export class CreateProfessorDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
     name: string;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	@IsEnum(Sex)
+	sex: Sex;
 
     @ApiProperty()
     @IsNotEmpty()
