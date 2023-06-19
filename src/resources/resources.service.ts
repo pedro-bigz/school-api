@@ -65,19 +65,14 @@ export class ResourcesService {
         mediaDto.size = media.metadata.size;
         mediaDto.disk = "s3";
 
-<<<<<<< HEAD
         this.mediaService.create(mediaDto).then((storedMedia) => {
           if (!storedMedia) {
-            throw new HttpException("Fail at media creation", 500);
+            throw new HttpException(
+              "Fail at media creation",
+              HttpStatus.INTERNAL_SERVER_ERROR
+            );
           }
         });
-=======
-        if (res == null)
-          throw new HttpException(
-            "Fail at media creation",
-            HttpStatus.INTERNAL_SERVER_ERROR
-          );
->>>>>>> origin/develop
       });
     }
 
