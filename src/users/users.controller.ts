@@ -63,6 +63,8 @@ export class UsersController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   async find(@Param("id") id: string) {
     try {

@@ -58,7 +58,6 @@ export class ResourcesService {
         mediaDto.disk = "s3";
 
         this.mediaService.create(mediaDto).then((storedMedia) => {
-          console.log(storedMedia);
           if (!storedMedia) {
             throw new HttpException("Fail at media creation", 500);
           }
@@ -127,6 +126,11 @@ export class ResourcesService {
     const resource = await this.resourceRepo.findOne({
       where: { id },
       relations: ["subject", "media"],
+    });
+    resource.media.map((media) => {
+      if (media.disk == "s3") {
+        media.url = this.mediaService.gets3MediaUrl(media);
+      }
     });
     if (resource == null) throw new HttpException("Resource not found", 404);
 

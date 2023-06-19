@@ -52,7 +52,6 @@ export class ResourcesController {
     @Body() filters: ResourceFilter
   ) {
     try {
-      console.log({ orderBy, orderDirection, page, take, filters });
       const parametersOfSearch: BaseListiningRequest<ResourceFilter> =
         new BaseListiningRequest<ResourceFilter>(
           orderBy,
@@ -62,7 +61,6 @@ export class ResourcesController {
           filters
         );
 
-      console.log(parametersOfSearch);
       const result = await this.resourcesService.findAllPaginated(
         parametersOfSearch
       );

@@ -38,6 +38,8 @@ export class Media {
   @Column()
   size: number; //length of file
 
+  url: string;
+
   @CreateDateColumn({ type: "timestamp", nullable: true })
   createdAt: Date;
 

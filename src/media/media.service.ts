@@ -41,12 +41,24 @@ export class MediaService {
     const uploadResult = await this.uploadMediaToS3(media);
 
     console.log(uploadResult.Location);
-    media.disk = uploadResult.Location;
+    // media.disk = uploadResult.Location;
 
     this.mediaRepository.create(media);
     this.mediaRepository.save(media);
 
     return media;
+  }
+
+  getS3Url() {
+    return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com`;
+  }
+
+  gets3MediaPath(media: Media) {
+    return `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`;
+  }
+
+  gets3MediaUrl(media: Media) {
+    return `${this.getS3Url()}/${this.gets3MediaPath(media)}`;
   }
 
   uploadMediaToS3(media: Media): Promise<S3.ManagedUpload.SendData> {
