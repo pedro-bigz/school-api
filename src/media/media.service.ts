@@ -52,7 +52,6 @@ export class MediaService {
   uploadMediaToS3(media: Media): Promise<S3.ManagedUpload.SendData> {
     const uploadedFile = fs.readFileSync("storage/uploads/" + media.filename);
     const contentMimeType = media.mime_type;
-    // const contentType = media.mime_type.replace(/.*\//, '');
     return this.uploadS3Service.uploadFileToBucket(
       `${media.collection_name}/${media.model_type}/${media.model_id}/${media.filename}`,
       uploadedFile,
